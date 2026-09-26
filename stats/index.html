@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkellyKuntz — Stats</title>
+<meta name="description" content="SkellyKuntz by the numbers: minted, awake, asleep, listed, merged away, $SKELLY volume and everything paid out to Skellies so far.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SkellyKuntz">
+<meta property="og:title" content="SkellyKuntz stats">
+<meta property="og:description" content="Minted, awake, asleep, listed, merged away, $SKELLY volume and everything paid out so far.">
+<meta property="og:url" content="https://skellykuntz.com/stats/">
+<meta property="og:image" content="https://skellykuntz.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@SkellyKuntz">
+<meta name="twitter:title" content="SkellyKuntz stats">
+<meta name="twitter:description" content="Minted, awake, asleep, listed, merged away, $SKELLY volume and everything paid out so far.">
+<meta name="twitter:image" content="https://skellykuntz.com/img/og.png">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/skelly.css?v=20260926205156">
+</head>
+<body>
+
+<main class="wrap" data-check="stats-page">
+  <div id="token-panel" class="mt" data-check="token"></div>
+
+  <section class="panel lit halftone mt" data-check="stats">
+    <div class="panel-head">
+      <h2>By the numbers</h2>
+      <span class="dim small">the whole collection, live</span>
+    </div>
+    <div class="stat-tiles">
+      <div class="tile"><span class="k">Minted</span><span class="v" id="st-minted">—</span><span class="u" id="st-minted-u">of 1,100</span></div>
+      <div class="tile"><span class="k">Awake</span><span class="v" id="st-awake">—</span><span class="u">earning every hour</span></div>
+      <div class="tile"><span class="k">Asleep</span><span class="v" id="st-asleep">—</span><span class="u">not woken yet</span></div>
+      <div class="tile"><span class="k">Merged away</span><span class="v" id="st-merged">—</span><span class="u">burned by merging into another Skelly</span></div>
+      <div class="tile"><span class="k">$SKELLY volume · 24h</span><span class="v"><span id="st-vol24">—</span> <small>ETH</small></span><span class="u" id="st-vol-u">buys and sells</span></div>
+      <div class="tile"><span class="k">$SKELLY volume · all time</span><span class="v"><span id="st-volall">—</span> <small>ETH</small></span><span class="u">since launch</span></div>
+      <div class="tile"><span class="k">Paid out to Skellies</span><span class="v"><span id="st-paid">—</span> <small>ETH</small></span><span class="u" id="st-paid-u">all time</span></div>
+    </div>
+    <p class="stat-note" id="st-note"></p>
+    <p class="small dim">Fees that reached the pot so far: <b id="st-gathered">—</b> ETH. Half of every $SKELLY trade fee goes in; the pot is paid out every hour, in stocks, into the awake Skellies.</p>
+  </section>
+
+  <section class="panel mt" data-check="stats-leaders">
+    <div class="panel-head">
+      <h3>Leaderboards</h3>
+      <span class="dim small">read from the chain every 5 minutes</span>
+    </div>
+    <div class="leaders">
+      <div><h4>Most share points</h4><p class="small dim">Level, merges and relic bonus added up: the biggest slice of every hourly pot.</p><ol class="lb" id="lb-power"></ol></div>
+      <div><h4>Most $SKELLY burned</h4><p class="small dim">The Skellies whose holders fed the fire the most.</p><ol class="lb" id="lb-burned"></ol></div>
+    </div>
+  </section>
+
+  <section class="panel mt" data-check="stats-listed" hidden>
+    <div class="panel-head">
+      <h3>Listed right now</h3>
+      <span class="dim small">tap one to see what's inside it</span>
+    </div>
+    <div class="mk-grid" id="st-listed-grid"></div>
+  </section>
+</main>
+
+<script src="/vendor/ethers.umd.min.js?v=20260926205156"></script>
+<script src="/config.js?v=20260926205156"></script>
+<script src="/js/abi.js?v=20260926205156"></script>
+<script src="/js/ui.js?v=20260926205156"></script>
+<script src="/js/rpc.js?v=20260926205156"></script>
+<script src="/js/chain.js?v=20260926205156"></script>
+<script src="/js/skcard.js?v=20260926205156"></script>
+<script src="/js/wallet.js?v=20260926205156"></script>
+<script src="/js/token.js?v=20260926205156"></script>
+<script src="/js/stats.js?v=20260926205156"></script>
+</body>
+</html>

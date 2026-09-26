@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkellyKuntz — My Skellies</title>
+<meta name="description" content="Connect a wallet to raise, ascend, absorb, set portions and unearth your SkellyKuntz holdings.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SkellyKuntz">
+<meta property="og:title" content="My Skellies">
+<meta property="og:description" content="Wake up, level up, merge, pick your payout, take money out.">
+<meta property="og:url" content="https://skellykuntz.com/my/">
+<meta property="og:image" content="https://skellykuntz.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@SkellyKuntz">
+<meta name="twitter:title" content="My Skellies">
+<meta name="twitter:description" content="Wake up, level up, merge, pick your payout, take money out.">
+<meta name="twitter:image" content="https://skellykuntz.com/img/og.png">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/skelly.css?v=20260926205156">
+</head>
+<body>
+
+<main class="wrap" data-check="my">
+  <section class="panel lit halftone mt" data-check="connect" id="connect-panel">
+    <div class="panel-head">
+      <h2>My Skellies</h2>
+      <span class="dim small">browser wallet · Robinhood Chain</span>
+    </div>
+    <div class="connect" id="connect">
+      <button class="btn acid" id="btn-connect">Connect wallet</button>
+      <span class="dim">Wake up, level up, merge, pick your payout, take money out. You always see the exact $SKELLY burn before you sign.</span>
+    </div>
+    <div class="connect hidden" id="connected">
+      <span class="addr" id="addr">—</span>
+      <span id="my-buy"></span>
+      <button class="btn xs" id="btn-refresh">Refresh</button>
+      <button class="btn xs ghost" id="btn-disconnect">Disconnect</button>
+    </div>
+    <div class="stat-row hidden" id="stats">
+      <span>Skellies: <b id="s-count">—</b></span>
+      <span>$SKELLY in wallet: <b id="s-bal">—</b></span>
+      <span>$SKELLY approved to burn: <b id="s-allow">—</b></span>
+      <span>Nothing is owed to your Skellies.</span>
+    </div>
+    <p class="launch-note hidden" id="launch-note">Wake up opens when $SKELLY launches.</p>
+  </section>
+
+  <div class="bulk hidden" id="bulk" data-check="bulk">
+    <button class="btn sm acid" id="btn-wake-all">Wake all asleep</button>
+    <button class="btn sm lemon" id="btn-level-all">Level all up</button>
+    <button class="btn sm sky" id="btn-unearth-all">Take out all</button>
+    <button class="btn sm pink" id="btn-absorb">Merge selected</button>
+    <span class="dim small" id="sel-note">Tick 2 or 3 Skellies to merge. The first one you tick is the one that stays.</span>
+  </div>
+
+  <div class="skellies" id="skellies" data-check="list"></div>
+  <p class="dim mt hidden" id="empty">No Skellies in this wallet yet. <a id="empty-mint" href="#">Mint one on OpenSea</a> or buy one on the secondary market. Whatever is inside comes with it.</p>
+</main>
+
+<script src="/vendor/ethers.umd.min.js?v=20260926205156"></script>
+<script src="/config.js?v=20260926205156"></script>
+<script src="/js/abi.js?v=20260926205156"></script>
+<script src="/js/ui.js?v=20260926205156"></script>
+<script src="/js/rpc.js?v=20260926205156"></script>
+<script src="/js/chain.js?v=20260926205156"></script>
+<script src="/js/token.js?v=20260926205156"></script>
+<script src="/js/wallet.js?v=20260926205156"></script>
+<script src="/js/mine.js?v=20260926205156"></script>
+</body>
+</html>

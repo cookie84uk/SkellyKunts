@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkellyKuntz — Get on the list</title>
+<meta name="description" content="Post your card, you're on the list. Every wallet on it lands in a round, GTD or FCFS, when the list closes. Paste your wallet, type your X handle, post the card, paste the link.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SkellyKuntz">
+<meta property="og:title" content="Get on the SkellyKuntz list">
+<meta property="og:description" content="Post your card, you're on the list. Every wallet on it lands in a round, GTD or FCFS, when the list closes.">
+<meta property="og:url" content="https://skellykuntz.com/list/">
+<meta property="og:image" content="https://skellykuntz.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@SkellyKuntz">
+<meta name="twitter:title" content="Get on the SkellyKuntz list">
+<meta name="twitter:description" content="Post your card, you're on the list. Every wallet on it lands in a round, GTD or FCFS, when the list closes.">
+<meta name="twitter:image" content="https://skellykuntz.com/img/og.png">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/skelly.css?v=20260926205156">
+</head>
+<body>
+
+<main class="wrap" data-check="list-page">
+  <div id="mint-countdown" class="mt" data-check="countdown"></div>
+  <section class="panel lit halftone lst" id="lst" data-check="list">
+    <div class="panel-head">
+      <h2>Get on the list</h2>
+      <span class="dim small" id="lst-sub">free mint for the list first</span>
+    </div>
+    <p class="lede lst-lede">Post your card, you're on the list. The mint goes to the list first: when it closes, <b>every wallet on it lands in a round, GTD or FCFS</b>. We draw the card, you post it from your own X account, you paste the link back. That's the whole thing.</p>
+    <ol class="lst-steps" id="lst-steps" aria-label="Steps">
+      <li>Wallet</li><li>X handle</li><li>Post it</li><li>Paste the link</li>
+    </ol>
+    <div class="lst-body" id="lst-body"></div>
+    <p class="small dim lst-foot">No permissions asked, on X or in your wallet. You post from your own account; we only read the public post. One wallet per X account. The list stays open; the GTD / FCFS split is announced before the mint. <a href="/docs/#list">More</a></p>
+  </section>
+
+  <section class="panel mt lst hidden" id="pile" data-check="list-pile">
+    <div class="panel-head">
+      <h3>The list so far</h3>
+      <span class="dim small" id="pile-sub">newest first</span>
+    </div>
+    <p class="pile-n"><b id="pile-n">—</b> <span id="pile-n-k">on the list</span> <span class="pile-open">· still open, no cap · GTD / FCFS decided at the close</span></p>
+    <div class="pile" id="pile-names"></div>
+    <p class="dim small hidden" id="pile-more"></p>
+  </section>
+
+  <section class="panel mt lst" id="check" data-check="list-check">
+    <div class="panel-head">
+      <h3>Already posted? Check a wallet</h3>
+      <span class="dim small">on the list, or not</span>
+    </div>
+    <div id="lst-check"></div>
+  </section>
+
+  <section class="panel mt lst faq" id="faq" data-check="list-faq">
+    <div class="panel-head"><h3>Questions people ask</h3></div>
+    <details open><summary>Is it really free?</summary><p>For the GTD round, yes. When the list closes we go through every wallet on it and each one lands in a round: GTD (a spot held for you) or FCFS (first come, first served). Real accounts with real activity go GTD first. Anyone not on the list can mint in the public round at 0.0015 ETH. Gas on Robinhood Chain is a fraction of a cent, so you need a tiny bit of ETH <em>on Robinhood Chain</em> in that wallet when you mint.</p></details>
+    <details><summary>Which wallet?</summary><p>Any normal Ethereum wallet: MetaMask, Rabby, Coinbase Wallet, Phantom's EVM side, a hardware wallet. Paste the address you'll mint with. It has to be the same wallet on mint day; the list is by address.</p></details>
+    <details><summary>How do I get ETH on Robinhood Chain?</summary><p id="faq-bridge">Bridge a little ETH over from Ethereum or another chain. A dollar's worth covers gas for a very long time.</p></details>
+    <details><summary>When is the mint?</summary><p>Soon. The date lands here and on the board as a countdown the moment it's set. Follow <a href="https://x.com/SkellyKuntz" target="_blank" rel="noopener">@SkellyKuntz</a>.</p></details>
+    <details><summary>Do I have to post?</summary><p>Yes. The post is how we know the wallet belongs to a real person with a real X account. No permissions are asked: you post yourself, we only read the public post.</p></details>
+    <details><summary>It says X can't show you my post</summary><p>X hides some accounts' posts from the tools we read with. Your link is saved and a person checks it by hand, usually within the day. Nothing else to do. If you'd rather not wait, turn off "mark media you post as sensitive" in X settings and post once more.</p></details>
+    <details><summary>Can I use two wallets?</summary><p>One wallet per X account, one X account per wallet. Posting again with the same wallet just updates it.</p></details>
+    <details><summary>I held a Skelly on Ink</summary><p>Complete the form we posted on X. Everyone who fills it gets their Skelly airdropped before the mint, to the wallet they gave, checked against the Ink holder snapshot. No form, no airdrop. You can still get on the list with the same wallet for a shot at another one.</p></details>
+  </section>
+</main>
+
+<script src="/config.js?v=20260926205156"></script>
+<script src="/js/ui.js?v=20260926205156"></script>
+<script src="/js/list.js?v=20260926205156"></script>
+</body>
+</html>

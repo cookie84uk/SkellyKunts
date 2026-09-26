@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkellyKuntz — How it works</title>
+<meta name="description" content="How SkellyKuntz works in plain words: the mint, waking your Skelly with $SKELLY, getting paid in tokenized stocks every hour, and the fine print.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SkellyKuntz">
+<meta property="og:title" content="How SkellyKuntz works">
+<meta property="og:description" content="The mint, waking your Skelly with $SKELLY, getting paid in tokenized stocks every hour, and the fine print.">
+<meta property="og:url" content="https://skellykuntz.com/docs/">
+<meta property="og:image" content="https://skellykuntz.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@SkellyKuntz">
+<meta name="twitter:title" content="How SkellyKuntz works">
+<meta name="twitter:description" content="The mint, waking your Skelly with $SKELLY, getting paid in tokenized stocks every hour, and the fine print.">
+<meta name="twitter:image" content="https://skellykuntz.com/img/og.png">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/skelly.css?v=20260926205156">
+</head>
+<body>
+
+<main class="wrap docs" data-check="docs">
+  <aside class="toc" aria-label="On this page">
+    <a href="#how">How it works</a>
+    <a href="#list">The list</a>
+    <a href="#fees">Where the money comes from</a>
+    <a href="#raise">Wake up, level up, merge</a>
+    <a href="#ranks">Levels</a>
+    <a href="#relics">Relics</a>
+    <a href="#offerings">What you get paid in</a>
+    <a href="#migration">The Ink airdrop</a>
+    <a href="#provenance">The art is locked</a>
+    <a href="#contracts">Contracts</a>
+    <a href="#disclosures">The fine print</a>
+  </aside>
+
+  <div class="doc">
+    <section id="how" class="panel halftone" data-check="doc-how">
+      <h2>How it works</h2>
+      <p><b>SkellyKuntz</b> is 1,100 skeleton NFTs on Robinhood Chain. The mint runs in two parts on OpenSea: people on the list mint <b>free</b> first, then it opens to everyone at <b>0.0015 ETH</b>. Any wallet works. If you held one on Ink, one was already sent to you here, free and with nothing to claim.</p>
+      <p class="small dim">Your per-wallet limit counts across the whole mint, not per part: minting on the list uses up part of your allowance rather than adding to it.</p>
+      <p>There's also a token, <b>$SKELLY</b>, on the Pons launchpad. Every time someone buys or sells $SKELLY, a small fee is paid. Half of that fee goes into a pot for the skeletons. The other half goes to the project treasury, which pays for running SkellyKuntz: the hourly payout bot and its gas, marketing, listings, new art and development. That 50/50 split is written into the contract and nobody can change it, ever.</p>
+      <p>A Skelly sitting in your wallet doesn't earn anything by itself. You have to <b>wake it up</b> (we call it <b>raising</b>) by burning 25,000 $SKELLY. From the next hour on, your Skelly gets a slice of the pot. The pot is turned into tokenized stocks, things like Apple, Nvidia and Tesla, or into USDG if you'd rather, and your slice is put inside your Skelly.</p>
+      <p>That last part matters. The money belongs to the Skelly, not to your wallet. Take it out whenever you like. Or sell the Skelly, and whatever's inside goes to the buyer.</p>
+      <p>Want a bigger slice? Burn more $SKELLY to level up. Merge two or three of your Skellies into one. And if you're lucky enough to draw one of the 11 relics, it earns 50% more, forever.</p>
+      <p class="small dim">The names you'll see around here: the pot machine is the <b>Crypt</b>, the fee splitter is the <b>Tithe</b>, and each Skelly's vault is its <b>Ossuary</b>. Under the hood they're just contracts. We like skeleton words.</p>
+    </section>
+
+    <section id="list" class="panel" data-check="doc-list">
+      <h2>The list</h2>
+      <p>Free Skellies go to the list first, and getting on it is one post: go to <a href="/list/">the list page</a>, paste the wallet you'll mint with, type your X handle, and the page draws you a card. Post the card from your own X account with the words the page gives you, then paste the link to your post back. <b>Post the card and you're on the list.</b> Nothing else counts.</p>
+      <ul>
+        <li><b>No permissions, ever.</b> We never connect to your X account or your wallet. You post yourself; we only read the public post to see it's really yours (your card carries a pass made from your wallet, and only you could have posted it).</li>
+        <li><b>One wallet per X account, one X account per wallet.</b> Posting again with the same wallet just updates it.</li>
+        <li><b>Two rounds, decided when the list closes.</b> We go through every wallet on the list and each one lands in GTD (a spot held for you) or FCFS (first come, first served). Real accounts with real activity go GTD first. The split is announced before the mint.</li>
+        <li><b>When the mint opens on OpenSea,</b> the mint page tells you which round your wallet is in. Anyone not on the list mints in the public round at 0.0015 ETH. Your per-wallet limit counts across the whole mint, free and paid together.</li>
+      </ul>
+    </section>
+
+    <section id="fees" class="panel" data-check="doc-fees">
+      <h2>Where the money comes from</h2>
+      <div class="flow">
+        <div class="node"><b>Someone trades $SKELLY</b><span>About 2.7% of every trade is paid as a fee. Pons holds it in an escrow for us.</span></div>
+        <div class="node"><b>The Tithe splits it</b><span>Anyone can press collect. It pulls the fee and pays out both halves. Nobody owns it and nobody can change it.</span></div>
+        <div class="node big"><b>Half to the pot · 50%</b><span>Waits in the Crypt until the top of the hour, then gets shared by every Skelly that's awake.</span></div>
+        <div class="node side"><b>Half to the project · 50%</b><span>Goes to the project treasury. It keeps the lights on: the payout bot and its gas, marketing, listings, art and development.</span></div>
+      </div>
+      <div class="bar" aria-hidden="true"><div class="a">50% THE POT</div><div class="b">50% PROJECT TREASURY</div></div>
+      <p class="small dim">If either side ever fails to receive its money, that share just waits for it. The other half still goes out. Nothing can block the pot.</p>
+      <p>Inside the Crypt, your slice is swapped into whatever you picked: up to three things, adding up to 100%. Didn't pick? You get USDG. Swaps go through real Uniswap pools with a 30-minute price check. If a price looks off or the amount is tiny, that ETH simply waits for the next hour instead of being swapped badly.</p>
+      <p><b>Don't want to wait?</b> Our bot does the swap for free once a Skelly has about 0.002 ETH waiting. Before that, or any time you like, press <b>Claim now</b> on <a href="/my/">My Skellies</a> and the swap happens right away. You pay the gas for that one, a few cents. Then <b>Take out</b> sends it to your wallet.</p>
+      <p class="small dim">Under the hood: <code>Tithe.collect()</code>, <code>Crypt.closeCycle()</code>, <code>Crypt.bestow()</code>, <code>Crypt.setPortion(tokenId, idx[], bps[])</code>, <code>OwedRolled</code>.</p>
+    </section>
+
+    <section id="raise" class="panel" data-check="doc-raise">
+      <h2>Wake up, level up, merge</h2>
+      <ul>
+        <li><b>Wake up (raise).</b> Burn <b>25,000 $SKELLY</b> and your Skelly starts earning from the next hour. If you sell it, it goes back to sleep and the new owner burns 25,000 $SKELLY to wake it again. Its level and any merges stay with it through every sale. Sending it to yourself doesn't put it to sleep.</li>
+        <li><b>Level up (ascend).</b> Burn more $SKELLY to climb five levels. Each level is a bigger slice. You only ever pay the difference to the next level. No refunds, and no going back down.</li>
+        <li><b>Merge (absorb).</b> Put two or three of your Skellies together into one. The others are gone for good and the total supply shrinks. The survivor gets their earning share added on, plus a bonus: +20% for two bodies, +30% for three. It costs <b>50,000 $SKELLY</b> to merge a second body and <b>100,000 more</b> for a third. Anything the merged Skellies had inside moves to the survivor.</li>
+        <li><b>Pick what you get paid in.</b> Choose up to three stocks (or USDG) and the percentages. Change it whenever you want. It only affects future hours.</li>
+        <li><b>Take it out (unearth).</b> Send everything your Skelly holds to your wallet, or just one thing at a time.</li>
+      </ul>
+      <p class="small dim">Every burn is you sending $SKELLY to the dead address, signed by you. The contracts never hold your tokens. Under the hood: <code>raise</code>, <code>ascend</code>, <code>absorb</code>, <code>Crypt.setPortion</code>, <code>Ossuary.unearth</code>, <code>unearthOne</code>, <code>Crypt.unearthOwed</code>.</p>
+    </section>
+
+    <section id="ranks" class="panel" data-check="doc-ranks">
+      <h2>Levels</h2>
+      <p>Your slice of the pot depends on your Skelly's <b>share points</b>. The level sets the base. Merges add on top. A relic multiplies the whole thing by 1.5 at the very end.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Level</th><th class="num">Total $SKELLY burned</th><th class="num">Cost to get here</th><th class="num">Share points</th><th class="num">If it's a relic</th></tr></thead>
+          <tbody id="ranks-body">
+            <tr><td>Awake</td><td class="num">25,000</td><td class="num">25,000</td><td class="num">×1.00</td><td class="num">×1.50</td></tr>
+            <tr><td>Level 1</td><td class="num">75,000</td><td class="num">50,000</td><td class="num">×1.40</td><td class="num">×2.10</td></tr>
+            <tr><td>Level 2</td><td class="num">150,000</td><td class="num">75,000</td><td class="num">×1.90</td><td class="num">×2.85</td></tr>
+            <tr><td>Level 3</td><td class="num">300,000</td><td class="num">150,000</td><td class="num">×2.50</td><td class="num">×3.75</td></tr>
+            <tr><td>Level 4</td><td class="num">850,000</td><td class="num">550,000</td><td class="num">×3.50</td><td class="num">×5.25</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small dim mt">Merging adds a bonus on top: ×1.2 with two bodies, ×1.3 with three. Example: three awake Skellies merged into one make (100+100+100)×1.3 = ×3.90 share points, for 75,000 $SKELLY to wake the three plus 150,000 to merge them. Under the hood: <code>RANK_BURN</code> / <code>RANK_POWER</code>.</p>
+    </section>
+
+    <section id="relics" class="panel" data-check="doc-relics">
+      <h2>Relics</h2>
+      <p>Pictures <b>1 to 11</b> are the eleven rarest in the whole collection, counted by how rare their traits are. Whoever draws one of these gets a relic for life: it earns 50% more than a normal Skelly at the same level. Merge a relic <em>into</em> another Skelly and the bonus is lost. Merge others into the relic and the bonus covers everything.</p>
+      <div class="relics" id="relic-grid"></div>
+      <p class="small dim mt">Under the hood: <code>isRelic(tokenId)</code>, <code>RELIC_BONUS_BPS</code> = 15,000.</p>
+    </section>
+
+    <section id="offerings" class="panel" data-check="doc-offerings">
+      <h2>What you get paid in</h2>
+      <p>This is the menu. Each one is a real tokenized stock (or USDG) with a public Uniswap pool on Robinhood Chain. The list can grow, but nothing on it can be removed or reordered. USDG is last on purpose: it's what you get if you never pick.</p>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>What it is</th><th>Token</th></tr></thead><tbody id="off-body"><tr><td colspan="4" class="dim">Loading the menu from the Crypt…</td></tr></tbody></table></div>
+    </section>
+
+    <section id="migration" class="panel" data-check="doc-migration">
+      <h2>The Ink airdrop</h2>
+      <p>SkellyKuntz started on Ink chain (<code id="ink-addr"></code>). <b>160</b> of the 1,100 were minted there by 62 wallets, but the art was never revealed: every one of them still shows the same placeholder card. That collection is retired.</p>
+      <ul>
+        <li><b>Held one on Ink? Complete the form we posted on X.</b> Everyone who fills it gets their Skelly sent from the project treasury, to the wallet they gave, one per Skelly held. No form, no airdrop.</li>
+        <li>Every form entry is checked against the Ink holder snapshot; a wallet that never held there gets nothing.</li>
+        <li>The drop opens with a 15-minute <b>team stage</b> (15:55 UTC, before the list at 16:10) in which the project mints <b>100</b> Skellies to its treasury: the Ink holders' pieces come out of those, the rest are the team's and the giveaways. Nothing else is minted outside the public stages.</li>
+        <li><b>Nobody picks their art, us included.</b> Since Ink never revealed, no one had a specific picture to keep. Airdropped Skellies are dealt their picture at the reveal, from the same beacon as everyone else.</li>
+      </ul>
+      <p class="small dim">Under the hood: <code>migrate(address[], uint16[])</code>, <code>MIGRATE_MAX</code> = 200.</p>
+    </section>
+
+    <section id="provenance" class="panel" data-check="doc-provenance">
+      <h2>The art is locked</h2>
+      <p>Before the first Skelly existed, we wrote one fingerprint of all 1,100 finished images into the contract. It can never change. Anyone can recompute it from the images and check that it matches.</p>
+      <p class="mono" id="prov" style="overflow-wrap:anywhere"></p>
+      <p>Nothing is decided at mint. Every Skelly wears the same shrouded card until minting closes. Then all 1,100 pictures are dealt at once, by a number nobody can choose.</p>
+      <h3>How the pictures are dealt</h3>
+      <ol>
+        <li>When minting closes, the contract picks a <b>future</b> drand round: about two minutes ahead.</li>
+        <li>drand is a public randomness network. Every three seconds, a group of independent organisations jointly signs the round number. No one of them can produce that signature alone, and nobody can produce it early.</li>
+        <li>Two minutes later that signature is published. Anyone can send it to the contract. The contract checks the signature itself, on-chain, so a fake one is simply rejected.</li>
+        <li>That signature becomes the seed, and the seed deals every picture at once. It's a shuffle: every Skelly gets exactly one picture and no picture goes to two Skellies.</li>
+      </ol>
+      <p><b>Nobody can aim for a relic, including us.</b> The round is fixed before its number exists, we can't run it again, and once it's dealt anyone can recompute the whole thing from the seed and check their own Skelly.</p>
+      <p class="small dim">If fewer than 1,100 Skellies are minted, only that many pictures are dealt. The rest, relics included, simply never enter circulation.</p>
+      <p class="small dim">Under the hood: <code>provenanceHash</code> = SHA-256 over the ordered SHA-256 hashes of the 1,100 images. <code>sealSummoning()</code> fixes the round (anyone can call it 30 days after minting starts, so a lost key can't leave the art shrouded); <code>unveil(signature)</code> verifies the drand quicknet beacon through the BLS12-381 precompiles and sets the seed; <code>formOf(tokenId)</code> is the shuffle. If drand ever missed that exact round, <code>refixUnveilRound()</code> points at a fresh one a week later.</p>
+    </section>
+
+    <section id="contracts" class="panel" data-check="doc-contracts">
+      <h2>Contracts</h2>
+      <div class="table-wrap"><table><tbody id="addr-body"></tbody></table></div>
+      <p class="small dim mt">The code names on this page are the real function names in the deployed contracts: <code>raise</code>, <code>ascend</code>, <code>absorb</code>, <code>powerOf</code>, <code>isRelic</code>, <code>bonesBurned</code>, <code>souls</code>, <code>Crypt.setPortion</code>, <code>Crypt.closeCycle</code>, <code>Crypt.gather</code>, <code>Crypt.bestow</code>, <code>Ossuary.unearth</code>, <code>Ossuary.holdingsOf</code>, <code>Tithe.collect</code>, <code>Tithe.split</code>.</p>
+    </section>
+
+    <section id="disclosures" class="panel" data-check="doc-disclosures">
+      <h2>The fine print</h2>
+      <div class="warn"><b>No audit.</b> These contracts have 147 tests and no outside audit. Bugs are possible. Only put in what you're okay losing.</div>
+      <ul>
+        <li><b>Pons can move the fee.</b> The Pons team can change who receives the creator fee of any token launched on Pons, after a <b>3-day delay</b>. Today that's our splitter. If they ever changed it, the pot would stop filling. We can't change the split ourselves, and we can't stop Pons from using that power either.</li>
+        <li><b>Any wallet works.</b> Plain wallets, smart accounts, multisigs and OpenSea's "pay from another chain" option can all mint. Nothing about the art is decided at mint, so there is no reason to turn anyone away.</li>
+        <li><b>Hourly needs someone to press the button.</b> The chain doesn't run itself. We run a bot that presses it every hour. If our bot ever stops, anyone can press the same buttons. Nothing is lost, only delayed.</li>
+        <li><b>Swaps can wait.</b> If a price looks off or the amount is tiny, that ETH waits for a later hour instead of being swapped at a bad price.</li>
+        <li><b>Burns are forever.</b> Waking up, leveling up and merging send $SKELLY to the dead address. No undo, no refund. Selling a Skelly puts it to sleep and the buyer pays to wake it.</li>
+        <li><b>What the project's admin key can do.</b> Set the image links before the reveal, add new things to the payout menu, tune the swap limits, and rescue tokens stuck in the Crypt. What it can't do: change any burn amount, the levels, the relic bonus, the fee split, the supply, or touch anyone's Skelly or what's inside it.</li>
+        <li><b>Tokenized stocks are tokens.</b> The stocks on the menu are made by other companies on Robinhood Chain. Their prices and pools aren't ours.</li>
+        <li><b>The art.</b> Some trait names were changed to generic ones. The pictures are what they are.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<script src="/vendor/ethers.umd.min.js?v=20260926205156"></script>
+<script src="/config.js?v=20260926205156"></script>
+<script src="/js/abi.js?v=20260926205156"></script>
+<script src="/js/ui.js?v=20260926205156"></script>
+<script src="/js/rpc.js?v=20260926205156"></script>
+<script src="/js/chain.js?v=20260926205156"></script>
+<script>
+(function () {
+  const C = window.SKELLY_CONFIG, SK = window.SK;
+  SK.chrome('/docs/');
+  document.getElementById('ink-addr').textContent = C.collection.inkContract;
+  document.getElementById('prov').textContent = C.collection.provenance;
+  const relics = document.getElementById('relic-grid');
+  for (let i = 1; i <= C.collection.relics; i++) relics.append(SK.artCard(i, { eager: true, label: `RELIC #${i}` }));
+  SK.lazy(relics);
+  const rows = [['SkellyKuntz (ERC-721)', C.contracts.skellies], ['$SKELLY token (Pons)', C.contracts.marrow], ['Crypt', C.contracts.crypt], ['Ossuary', C.contracts.ossuary], ['Tithe', C.contracts.tithe]];
+  const ab = document.getElementById('addr-body');
+  for (const [name, addr] of rows) {
+    ab.append(SK.el('tr', null, SK.el('td', null, name), SK.el('td', { class: 'mono', style: 'overflow-wrap:anywhere' },
+      SK.isPlaceholder(addr) ? SK.el('span', { class: 'dim' }, 'not deployed yet') : SK.el('a', { href: SK.explorerAddr(addr), target: '_blank', rel: 'noopener' }, addr))));
+  }
+  const chain = window.SkellyChain.make();
+  chain.offerings().then((offs) => {
+    const tb = document.getElementById('off-body'); tb.innerHTML = '';
+    if (!offs.length) { tb.append(SK.el('tr', null, SK.el('td', { colspan: 4, class: 'dim' }, '—'))); return; }
+    for (const o of offs) tb.append(SK.el('tr', null, SK.el('td', null, o.idx), SK.el('td', null, o.symbol), SK.el('td', null, o.isStock ? 'tokenized stock' : 'stable'),
+      SK.el('td', { class: 'mono' }, o.token ? SK.el('a', { href: SK.explorerAddr(o.token), target: '_blank', rel: 'noopener' }, SK.short(o.token)) : '—')));
+  }).catch(() => { document.getElementById('off-body').innerHTML = '<tr><td colspan="4" class="dim">—</td></tr>'; });
+})();
+</script>
+</body>
+</html>

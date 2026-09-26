@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkellyKuntz — Skelly Roll</title>
+<meta name="description" content="Skelly Roll: 100,000 $SKELLY a roll, 10% burned, the rest is the pot. Bones, big bones, the motherlode or the jackpot — the beacon decides, on-chain.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SkellyKuntz">
+<meta property="og:title" content="Skelly Roll">
+<meta property="og:description" content="100,000 $SKELLY a roll. 10% burned. The rest is the pot. The beacon decides.">
+<meta property="og:url" content="https://skellykuntz.com/roll/">
+<meta property="og:image" content="https://skellykuntz.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@SkellyKuntz">
+<meta name="twitter:title" content="Skelly Roll">
+<meta name="twitter:description" content="100,000 $SKELLY a roll. 10% burned. The rest is the pot. The beacon decides.">
+<meta name="twitter:image" content="https://skellykuntz.com/img/og.png">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/skelly.css?v=20260926205156">
+</head>
+<body>
+
+<main class="wrap" data-check="roll-page">
+  <div class="rl-hero mt">
+    <video autoplay muted loop playsinline poster="/roll/machine-poster.jpg" aria-label="Skeletons around a slot machine"><source src="/roll/machine.mp4" type="video/mp4"></video>
+    <h1 class="rl-title">Skelly <span style="color:var(--lemon)">Roll</span></h1>
+  </div>
+
+  <section class="panel lit halftone mt" data-check="roll">
+    <div class="panel-head">
+      <h2>The machine</h2>
+      <span class="dim small" id="rl-state">reading the chain…</span>
+    </div>
+    <p class="lede">A roll is <b>100,000 $SKELLY</b>. 10% is burned, the rest goes into the pot. There is no house: everything in the pot goes back out as prizes. The result is fixed by a public randomness beacon 30 seconds after you roll and verified on-chain — nobody knows it when you pay, and nobody can hide it.</p>
+
+    <div class="rl-tiles">
+      <div class="tile"><span class="k">The pot</span><span class="v" id="rl-pot">—</span><span class="u">$SKELLY, all of it prizes</span></div>
+      <div class="tile"><span class="k">Jackpot right now</span><span class="v" id="rl-jack">—</span><span class="u">10% of the pot</span></div>
+      <div class="tile"><span class="k">Burned by rolls</span><span class="v" id="rl-burned">—</span><span class="u">$SKELLY gone for good</span></div>
+      <div class="tile"><span class="k">Paid out</span><span class="v" id="rl-paid">—</span><span class="u">$SKELLY won so far</span></div>
+    </div>
+
+    <table class="rl-odds" id="rl-odds" aria-label="Odds">
+      <thead><tr><th>Prize</th><th class="n">Chance</th><th class="n">Pays</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="small dim">Odds are on-chain. A prize the pot can't cover drops out and the chances re-spread over the rest — if that happens between your roll and its settlement, you are re-drawn across what's left.</p>
+
+    <div class="rl-machine">
+      <div class="rl-reels" id="rl-reels" aria-live="polite"></div>
+      <div class="rl-buttons" id="rl-buttons"></div>
+      <p class="rl-status small" id="rl-status"></p>
+    </div>
+  </section>
+
+  <section class="panel mt" data-check="roll-feed">
+    <div class="panel-head"><h3>Last spins</h3><span class="dim small">from the chain</span></div>
+    <ul class="rl-feed" id="rl-feed"><li><span class="dim">Reading the chain…</span></li></ul>
+  </section>
+</main>
+
+<script src="/vendor/ethers.umd.min.js?v=20260926205156"></script>
+<script src="/config.js?v=20260926205156"></script>
+<script src="/js/abi.js?v=20260926205156"></script>
+<script src="/js/ui.js?v=20260926205156"></script>
+<script src="/js/rpc.js?v=20260926205156"></script>
+<script src="/js/wallet.js?v=20260926205156"></script>
+<script src="/js/token.js?v=20260926205156"></script>
+<script src="/js/roll.js?v=20260926205156"></script>
+</body>
+</html>
