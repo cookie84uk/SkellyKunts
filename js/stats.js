@@ -84,7 +84,7 @@
     set('tr-hour-u', `${SK.int(sw.hourCount || 0)} move${sw.hourCount === 1 ? '' : 's'}`);
     set('tr-day', eth(sw.ethDay));
     set('tr-total', eth(sw.ethTotal));
-    set('tr-count', `${SK.int(sw.count || 0)} moves`);
+    set('tr-count', sw.ethToPot && big(sw.ethToPot) > 0n ? `${eth(sw.ethToPot)} ETH to the pot` : `${SK.int(sw.count || 0)} moves`);
 
     const pay = T.payouts || {};
     set('tr-pay', eth(pay.total24h));

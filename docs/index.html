@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/skelly.css?v=20260928101500">
+<link rel="stylesheet" href="/css/skelly.css?v=20260928103000">
 </head>
 <body>
 
@@ -55,7 +55,7 @@
       <h2>How it works</h2>
       <p><b>SkellyKuntz</b> is 1,100 skeleton NFTs on Robinhood Chain. The mint runs in two parts on OpenSea: people on the list mint <b>free</b> first, then it opens to everyone at <b>0.0015 ETH</b>. Any wallet works. If you held one on Ink, one was already sent to you here, free and with nothing to claim.</p>
       <p class="small dim">Your per-wallet limit counts across the whole mint, not per part: minting on the list uses up part of your allowance rather than adding to it.</p>
-      <p>There's also a token, <b>$SKELLY</b>, on the Pons launchpad. Every time someone buys or sells $SKELLY, a small fee is paid. Half of that fee goes into a pot for the skeletons. The other half goes to the project treasury, which pays for running SkellyKuntz: the hourly payout bot and its gas, marketing, listings, new art and development. That 50/50 split is written into the contract and nobody can change it, ever.</p>
+      <p>There's also a token, <b>$SKELLY</b>. Every time someone buys or sells $SKELLY, a small fee is paid. Half of that fee goes into a pot for the skeletons. The other half goes to the project treasury, along with the <b>5% royalty</b> on every secondary sale of a Skelly. Half of what reaches the treasury is forwarded into the pot as well; the rest pays for running SkellyKuntz: gas, listings, new art and development. The 50/50 fee split is written into the contract and nobody can change it, ever.</p>
       <p>A Skelly sitting in your wallet doesn't earn anything by itself. You have to <b>wake it up</b> (we call it <b>raising</b>) by burning 25,000 $SKELLY. From the next hour on, your Skelly gets a slice of the pot. The pot is turned into tokenized stocks, things like Apple, Nvidia and Tesla, or into USDG if you'd rather, and your slice is put inside your Skelly.</p>
       <p>That last part matters. The money belongs to the Skelly, not to your wallet. Take it out whenever you like. Or sell the Skelly, and whatever's inside goes to the buyer.</p>
       <p>Want a bigger slice? Burn more $SKELLY to level up. Merge two or three of your Skellies into one. And if you're lucky enough to draw one of the 11 relics, it earns 50% more, forever.</p>
@@ -79,9 +79,10 @@
         <div class="node"><b>Someone trades $SKELLY</b><span>About 2.7% of every trade is paid as a fee. Pons holds it in an escrow for us.</span></div>
         <div class="node"><b>The Tithe splits it</b><span>Anyone can press collect. It pulls the fee and pays out both halves. Nobody owns it and nobody can change it.</span></div>
         <div class="node big"><b>Half to the pot · 50%</b><span>Waits in the Crypt until the top of the hour, then gets shared by every Skelly that's awake.</span></div>
-        <div class="node side"><b>Half to the project · 50%</b><span>Goes to the project treasury. It keeps the lights on: the payout bot and its gas, marketing, listings, art and development.</span></div>
+        <div class="node side"><b>Half to the project · 50%</b><span>Goes to the project treasury, together with the 5% royalty on secondary sales. Half of what arrives there is forwarded into the pot too; the rest keeps the lights on: gas, listings, art and development.</span></div>
       </div>
       <div class="bar" aria-hidden="true"><div class="a">50% THE POT</div><div class="b">50% PROJECT TREASURY</div></div>
+      <p>Secondary sales are separate: the Skelly contract carries a fixed <b>5% royalty</b> and sends it to that same treasury address. It cannot be redirected — not by us, not by anyone; the contract reverts if you try. Half of it is forwarded into the pot as it arrives.</p>
       <p class="small dim">If either side ever fails to receive its money, that share just waits for it. The other half still goes out. Nothing can block the pot.</p>
       <p>Inside the Crypt, your slice is swapped into whatever you picked: up to three things, adding up to 100%. Didn't pick? You get USDG. Swaps go through real Uniswap pools with a 30-minute price check. If a price looks off or the amount is tiny, that ETH simply waits for the next hour instead of being swapped badly.</p>
       <p><b>Don't want to wait?</b> Our bot does the swap for free once a Skelly has about 0.002 ETH waiting. Before that, or any time you like, press <b>Claim now</b> on <a href="/my/">My Skellies</a> and the swap happens right away. You pay the gas for that one, a few cents. Then <b>Take out</b> sends it to your wallet.</p>
@@ -183,12 +184,12 @@
   </div>
 </main>
 
-<script src="/vendor/ethers.umd.min.js?v=20260928101500"></script>
-<script src="/config.js?v=20260928101500"></script>
-<script src="/js/abi.js?v=20260928101500"></script>
-<script src="/js/ui.js?v=20260928101500"></script>
-<script src="/js/rpc.js?v=20260928101500"></script>
-<script src="/js/chain.js?v=20260928101500"></script>
+<script src="/vendor/ethers.umd.min.js?v=20260928103000"></script>
+<script src="/config.js?v=20260928103000"></script>
+<script src="/js/abi.js?v=20260928103000"></script>
+<script src="/js/ui.js?v=20260928103000"></script>
+<script src="/js/rpc.js?v=20260928103000"></script>
+<script src="/js/chain.js?v=20260928103000"></script>
 <script>
 (function () {
   const C = window.SKELLY_CONFIG, SK = window.SK;
