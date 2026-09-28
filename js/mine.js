@@ -138,13 +138,15 @@
   function paintSummary() {
     const { usd, owed, owedUsd } = usdOfWallet();
     const inside = mine.skellies.filter((s) => s.holdings.length).length;
-    const parts = [];
-    // Two separate numbers on purpose: what can be taken out right now (tokens
-    // already inside the Ossuary) versus ETH still being converted. Mixed into
-    // one "total" they read as if the converting part were claimable.
-    if (usd >= 0.005) parts.push(`${money(usd)} ready to take out${inside ? ` (${SK.int(inside)} Skellies)` : ''}`);
-    if (owed > 0n) parts.push(`${SK.eth(owed, 6)} ETH earned, converts automatically${owedUsd ? ` (≈ ${money(owedUsd)})` : ''}`);
-    $('s-owed').textContent = parts.length ? parts.join(' · ') : 'Nothing earned yet — a Skelly starts earning the hour after it wakes.';
+    // Plain facts, in order: what you have earned, what is available right now,
+    // and what is still waiting to be paid out. Never one blended number — an
+    // "earned" total that includes money not yet paid reads as take-outable.
+    if (usd < 0.005 && owed === 0n) { $('s-owed').textContent = 'Nothing earned yet — a Skelly starts earning the hour after it wakes.'; return; }
+    const bits = [];
+    if (owedUsd != null) bits.push(`You've earned ${money(usd + owedUsd)} in total`);
+    if (usd >= 0.005) bits.push(`${money(usd)} is available to take out now${inside ? ` (${SK.int(inside)} Skellies)` : ''}`);
+    if (owed > 0n) bits.push(`${SK.eth(owed, 6)} ETH${owedUsd != null ? ` (≈ ${money(owedUsd)})` : ''} is waiting to be paid out`);
+    $('s-owed').textContent = bits.join('. ') + '.';
   }
 
   // Guarded: a stale page cache could serve the HTML without the filter bar.
@@ -181,9 +183,9 @@
     // the stock/USDG that lands in its Ossuary. It is real money owed to this
     // Skelly; showing it is the difference between "nothing due" and the truth.
     if (s.owedEth && s.owedEth > 0n) owedRows.push(SK.el('tr', null,
-      SK.el('td', null, 'Earned — not take-outable yet'), SK.el('td', { class: 'num' },
+      SK.el('td', null, 'Earned — waiting to be paid'), SK.el('td', { class: 'num' },
         ethUsd ? `${SK.eth(s.owedEth, 6)} ETH (≈ ${money(Number(E.formatEther(s.owedEth)) * ethUsd)})` : `${SK.eth(s.owedEth, 6)} ETH`),
-      SK.el('td', { class: 'right' }, SK.el('span', { class: 'dim small' }, 'converts on the hour'))));
+      SK.el('td', { class: 'right' }, SK.el('span', { class: 'dim small' }, 'queued for payout'))));
     const portion = s.portion && s.portion.count ? s.portion.idx.map((i, k) => `${(offerings[i] || { symbol: `#${i}` }).symbol} ${s.portion.bps[k] / 100}%`).join(' · ') : 'USDG (default)';
     const off = unbound();
     const canAscend = !off && s.bonesBurned != null && s.bonesBurned > 0n && s.rank < 4;
