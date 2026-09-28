@@ -37,7 +37,7 @@
     set('st-listed-u', L && L.floor ? `floor ${L.floor.replace(/\.?0+$/, '')} ETH` : (L && L.note ? 'OpenSea not linked yet' : 'on OpenSea'));
     const V = s.volume;
     set('st-vol24', V ? ethOf(V.dayWei) : SK.dash);
-    set('st-volall', V ? ethOf(V.totalWei) : SK.dash);
+    set('st-liquidity', s.token && s.token.liquidityEth != null ? SK.eth(BigInt(Math.round(s.token.liquidityEth * 1e18)), 3) : SK.dash);
     set('st-vol-u', c.tokenBound ? `${V && V.trades != null ? SK.int(V.trades) + ' trades' : ''}` : '$SKELLY not launched yet');
     const R = s.rewards;
     set('st-paid', R ? ethOf(R.totalWei) : SK.dash);

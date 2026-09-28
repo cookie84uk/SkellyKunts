@@ -41,7 +41,7 @@
       <div class="tile"><span class="k">Asleep</span><span class="v" id="st-asleep">—</span><span class="u">not woken yet</span></div>
       <div class="tile"><span class="k">Merged away</span><span class="v" id="st-merged">—</span><span class="u">burned by merging into another Skelly</span></div>
       <div class="tile"><span class="k">$SKELLY volume · 24h</span><span class="v"><span id="st-vol24">—</span> <small>ETH</small></span><span class="u" id="st-vol-u">buys and sells</span></div>
-      <div class="tile"><span class="k">$SKELLY volume · all time</span><span class="v"><span id="st-volall">—</span> <small>ETH</small></span><span class="u">since launch</span></div>
+      <div class="tile"><span class="k">Pool liquidity</span><span class="v"><span id="st-liquidity">—</span> <small>ETH</small></span><span class="u">in the $SKELLY pool</span></div>
       <div class="tile"><span class="k">Gathered for the pot</span><span class="v"><span id="st-paid">—</span> <small>ETH</small></span><span class="u" id="st-paid-u">from trade fees, all time</span></div>
     </div>
     <p class="stat-note" id="st-note"></p>
@@ -51,17 +51,17 @@
   <section class="panel mt" data-check="treasury">
     <div class="panel-head">
       <h2>Treasury</h2>
-      <span class="dim small">royalties land here, then get swept out</span>
+      <span class="dim small">project income from secondary-sale royalties</span>
     </div>
     <div class="stat-tiles">
-      <div class="tile"><span class="k">In the treasury now</span><span class="v"><span id="tr-now">—</span> <small>ETH</small></span><span class="u">plus <b id="tr-tokens">—</b></span></div>
-      <div class="tile"><span class="k">Swept this hour</span><span class="v"><span id="tr-hour">—</span> <small>ETH</small></span><span class="u" id="tr-hour-u">— moves</span></div>
-      <div class="tile"><span class="k">Swept · 24h</span><span class="v"><span id="tr-day">—</span> <small>ETH</small></span><span class="u">moved to safety</span></div>
-      <div class="tile"><span class="k">Swept · all time</span><span class="v"><span id="tr-total">—</span> <small>ETH</small></span><span class="u" id="tr-count">— moves</span></div>
+      <div class="tile"><span class="k">In the treasury</span><span class="v"><span id="tr-now">—</span> <small>ETH</small></span><span class="u">plus <b id="tr-tokens">—</b></span></div>
+      <div class="tile"><span class="k">Collected this hour</span><span class="v"><span id="tr-hour">—</span> <small>ETH</small></span><span class="u" id="tr-hour-u">—</span></div>
+      <div class="tile"><span class="k">Collected · 24h</span><span class="v"><span id="tr-day">—</span> <small>ETH</small></span><span class="u">royalties</span></div>
+      <div class="tile"><span class="k">Collected · all time</span><span class="v"><span id="tr-total">—</span> <small>ETH</small></span><span class="u" id="tr-count">—</span></div>
       <div class="tile"><span class="k">Pot paid · 24h</span><span class="v"><span id="tr-pay">—</span> <small>ETH</small></span><span class="u" id="tr-pay-u">hourly payouts</span></div>
-      <div class="tile"><span class="k">Last sweep</span><span class="v" id="tr-last">—</span><span class="u">UTC</span></div>
+      <div class="tile"><span class="k">Last collection</span><span class="v" id="tr-last">—</span><span class="u">UTC</span></div>
     </div>
-    <p class="small dim">Royalties — 5% of every secondary sale — are routed by the contract itself to <span class="mono" id="tr-addr">—</span>. The project's keeper forwards them to the project wallet <span class="mono" id="tr-dest">—</span> every few minutes, so nothing is left sitting in the royalty address.</p>
+    <p class="small dim">Every secondary sale pays a 5% royalty to the project. It funds the hourly payouts, swap gas, listings and development.</p>
   </section>
 
   <section class="panel mt" data-check="stats-leaders">
