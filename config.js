@@ -71,9 +71,10 @@ window.SKELLY_CONFIG = {
     collection: 'https://opensea.io/collection/skellykuntz',
     // OpenSea asset URL pattern; {contract} and {id} are replaced
     asset: 'https://opensea.io/item/robinhood/{contract}/{id}',
-    // The $SKELLY page on Pons. Left empty, every buy button resolves to
-    // ponsLaunchpad + the token address the moment `contracts.marrow` is set.
-    token: '',
+    // Where the buy buttons send people. $SKELLY has graduated off the Pons
+    // launchpad (which also geo-blocks some countries), so this points at the
+    // live SKELLY/WETH pool instead.
+    token: 'https://www.geckoterminal.com/robinhood/pools/0x8fcfdac854715b6c49e18ec73a84c4b3d63e834cb2aa784d8626db27f1155446',
     ponsLaunchpad: 'https://www.ponsfamily.com/launchpad/',
     // Social
     x: 'https://x.com/SkellyKuntz',
