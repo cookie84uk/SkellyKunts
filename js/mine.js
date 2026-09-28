@@ -103,6 +103,12 @@
       SK.el('td', { class: 'right' }, SK.el('button', { class: 'btn xs', onclick: () => doUnearthOne(s, h) }, 'Take out'))));
     const owedRows = s.owedSlots.map((h) => SK.el('tr', null, SK.el('td', null, `${h.symbol} (waiting)`), SK.el('td', { class: 'num' }, SK.units(h.amount, h.decimals, 4)),
       SK.el('td', { class: 'right' }, SK.el('button', { class: 'btn xs', onclick: () => doUnearthOwed(s, h) }, 'Take'))));
+    // ETH a Skelly has earned this hour but that has not yet been swapped into
+    // the stock/USDG that lands in its Ossuary. It is real money owed to this
+    // Skelly; showing it is the difference between "nothing due" and the truth.
+    if (s.owedEth && s.owedEth > 0n) owedRows.push(SK.el('tr', null,
+      SK.el('td', null, 'ETH earned (converting)'), SK.el('td', { class: 'num' }, SK.eth(s.owedEth, 6)),
+      SK.el('td', { class: 'right' }, SK.el('span', { class: 'dim small' }, 'auto'))));
     const portion = s.portion && s.portion.count ? s.portion.idx.map((i, k) => `${(offerings[i] || { symbol: `#${i}` }).symbol} ${s.portion.bps[k] / 100}%`).join(' · ') : 'USDG (default)';
     const off = unbound();
     const canAscend = !off && s.bonesBurned != null && s.bonesBurned > 0n && s.rank < 4;
