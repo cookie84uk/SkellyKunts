@@ -114,11 +114,10 @@ window.SKELLY_CONFIG = {
   // account; the token itself is public by design). Empty = no analytics.
   analyticsToken: '',
 
-  // The stats Worker (stats/worker.js): one JSON every five minutes with the
-  // counts, volumes, rewards and OpenSea listings. Placeholder = the pages
-  // fall back to what the chain answers directly and say the rest is coming.
+  // Our own stats service (skellybot on Railway): /stats and /listings. Replaces
+  // the old stats Worker. Empty = the pages fall back to direct chain reads.
   stats: {
-    url: 'https://stats.skellykuntz.workers.dev',
+    url: 'https://skelly-production.up.railway.app',
   },
 
   // The mint. `opensAt` (ISO 8601, UTC, e.g. '2026-09-21T18:00:00Z') turns
