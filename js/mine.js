@@ -126,6 +126,9 @@
   // Dollars where we can: USDG is a dollar; ETH credit is priced with the live
   // ETH/USD. Tokenised stocks stay in units — the site has no stock price.
   const money = (n) => (n == null || !isFinite(n) ? SK.dash : n < 0.01 ? '<$0.01' : '$' + n.toFixed(2));
+  // One format for a holding everywhere it appears (the Skelly card and the bulk
+  // take-out list), so the two always read the same.
+  const fmtHolding = (h) => ((h.symbol || '').toUpperCase() === 'USDG' ? money(Number(h.amount) / 1e6) : SK.units(h.amount, h.decimals, h.decimals === 6 ? 2 : 4));
 
   function usdOfWallet() {
     let usd = 0;
@@ -168,8 +171,7 @@
       s.relic ? SK.el('span', { class: 'badge relic' }, 'relic ×1.5') : null,
       s.souls > 1 ? SK.el('span', { class: 'badge souls' }, `${s.souls} souls`) : null,
     ];
-    const holdRows = s.holdings.map((h) => SK.el('tr', null, SK.el('td', null, h.symbol), SK.el('td', { class: 'num' },
-      (h.symbol || '').toUpperCase() === 'USDG' ? money(Number(h.amount) / 1e6) : SK.units(h.amount, h.decimals, h.decimals === 6 ? 2 : 4)),
+    const holdRows = s.holdings.map((h) => SK.el('tr', null, SK.el('td', null, h.symbol), SK.el('td', { class: 'num' }, fmtHolding(h)),
       SK.el('td', { class: 'right' }, SK.el('button', { class: 'btn xs', onclick: () => doUnearthOne(s, h) }, 'Take out'))));
     const owedRows = s.owedSlots.map((h) => SK.el('tr', null, SK.el('td', null, `${h.symbol} (waiting)`), SK.el('td', { class: 'num' }, SK.units(h.amount, h.decimals, 4)),
       SK.el('td', { class: 'right' }, SK.el('button', { class: 'btn xs', onclick: () => doUnearthOwed(s, h) }, 'Take'))));
@@ -207,7 +209,8 @@
     $('btn-absorb').disabled = off || n < 2 || n > 3;
     $('btn-absorb').title = off ? LAUNCH_NOTE : '';
     $('sel-note').textContent = off ? `Merge opens when $SKELLY launches.` : n ? `${n} selected. The one that stays: #${[...selected][0]}.` : 'Tick 2 or 3 Skellies to merge. The first one you tick is the one that stays.';
-    $('btn-unearth-all').disabled = !mine || !mine.skellies.some((s) => s.holdings.length);
+    $('btn-unearth-all').textContent = n ? `Take out selected (${unearthTargets().length})` : 'Take out all';
+    $('btn-unearth-all').disabled = !unearthTargets().length;
     const asleep = bulkTargets().filter((s) => s.raised === false);
     const levelable = bulkTargets().filter((s) => s.rank < 4);
     $('btn-wake-all').textContent = asleep.length ? `Wake ${n ? 'selected' : 'all'} asleep (${asleep.length})` : 'Wake all asleep';
@@ -219,6 +222,9 @@
   }
   // Bulk actions work on the ticked Skellies when any are ticked, else on all of them.
   const bulkTargets = () => !mine ? [] : (selected.size ? mine.skellies.filter((s) => selected.has(s.id)) : mine.skellies);
+  // Take-out follows the same rule, and only lists Skellies that actually hold
+  // something — so a bulk take-out matches doing it one at a time on those.
+  const unearthTargets = () => bulkTargets().filter((s) => s.holdings.length);
 
   // ------------------------------------------------------------ dialog + run
   const line = (k, v, burn) => SK.el('div', { class: 'line' + (burn ? ' burn' : '') }, SK.el('span', null, k), SK.el('b', null, v));
@@ -460,9 +466,9 @@
   });
 
   $('btn-unearth-all').addEventListener('click', async () => {
-    const with_ = mine.skellies.filter((s) => s.holdings.length);
+    const with_ = unearthTargets();
     if (!with_.length) return;
-    const lines = with_.map((s) => line(`#${s.id}`, s.holdings.map((h) => `${SK.units(h.amount, h.decimals, h.decimals === 6 ? 2 : 4)} ${h.symbol}`).join(' · ')));
+    const lines = with_.map((s) => line(`#${s.id}`, s.holdings.map((h) => `${fmtHolding(h)} ${h.symbol}`).join(' · ')));
     const ok = await SK.modal({ title: `Take out from ${with_.length} Skellies`, body: SK.el('div', null, SK.el('div', { class: 'lines' }, lines), SK.el('p', { class: 'note' }, 'One signature for all of them if your wallet supports batching. Otherwise one at a time, in order.')), ok: 'Sign' });
     if (!ok) return;
     const steps = with_.map((s) => ({ label: `Ossuary.unearth(#${s.id})`, call: { to: ADDR.ossuary, iface: IF.ossuary, fn: 'unearth', args: [s.id] }, mock: ['unearth', { id: s.id }] }));
