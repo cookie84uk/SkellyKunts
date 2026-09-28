@@ -48,6 +48,22 @@
     <p class="small dim">Fees that reached the pot so far: <b id="st-gathered">—</b> ETH. Half of every $SKELLY trade fee goes in; the pot is paid out every hour, in stocks, into the awake Skellies.</p>
   </section>
 
+  <section class="panel mt" data-check="treasury">
+    <div class="panel-head">
+      <h2>Treasury</h2>
+      <span class="dim small">royalties land here, then get swept out</span>
+    </div>
+    <div class="stat-tiles">
+      <div class="tile"><span class="k">In the treasury now</span><span class="v"><span id="tr-now">—</span> <small>ETH</small></span><span class="u">plus <b id="tr-tokens">—</b></span></div>
+      <div class="tile"><span class="k">Swept this hour</span><span class="v"><span id="tr-hour">—</span> <small>ETH</small></span><span class="u" id="tr-hour-u">— moves</span></div>
+      <div class="tile"><span class="k">Swept · 24h</span><span class="v"><span id="tr-day">—</span> <small>ETH</small></span><span class="u">moved to safety</span></div>
+      <div class="tile"><span class="k">Swept · all time</span><span class="v"><span id="tr-total">—</span> <small>ETH</small></span><span class="u" id="tr-count">— moves</span></div>
+      <div class="tile"><span class="k">Paid out · 24h</span><span class="v"><span id="tr-pay">—</span> <small>ETH</small></span><span class="u" id="tr-pay-u">hourly payouts</span></div>
+      <div class="tile"><span class="k">Last sweep</span><span class="v" id="tr-last">—</span><span class="u">UTC</span></div>
+    </div>
+    <p class="small dim">Royalties — 5% of every secondary sale — land at <span class="mono" id="tr-addr">—</span>. That address can't change, so a keeper sweeps it empty every few minutes and forwards everything to <span class="mono" id="tr-dest">—</span>.</p>
+  </section>
+
   <section class="panel mt" data-check="stats-leaders">
     <div class="panel-head">
       <h3>Leaderboards</h3>

@@ -64,6 +64,41 @@
     if (L.items.length > items.length) box.after(el('p', { class: 'mt' }, el('a', { class: 'btn sm sky', href: '/market/' }, `All ${SK.int(L.count)} on the market →`)));
   }
 
+  function treasury(s) {
+    const T = s && s.treasury;
+    if (!T) return;
+    const dash = SK.dash;
+    const big = (v) => { try { return v == null ? null : BigInt(v); } catch { return null; } };
+    const eth = (v, dp = 6) => { const b = big(v); return b == null ? dash : SK.eth(b, dp); };
+    const units = (v, dp) => {
+      if (v == null) return dash;
+      return (Number(v) / 10 ** dp).toLocaleString('en-US', { maximumFractionDigits: 6 });
+    };
+
+    set('tr-now', eth(T.eth));
+    const held = [];
+    if (big(T.weth) > 0n) held.push(`${units(T.weth, 18)} WETH`);
+    if (big(T.usdg) > 0n) held.push(`${units(T.usdg, 6)} USDG`);
+    set('tr-tokens', held.length ? held.join(' · ') : 'nothing right now');
+
+    const sw = T.swept || {};
+    set('tr-hour', eth(sw.ethHour));
+    set('tr-hour-u', `${SK.int(sw.hourCount || 0)} move${sw.hourCount === 1 ? '' : 's'}`);
+    set('tr-day', eth(sw.ethDay));
+    set('tr-total', eth(sw.ethTotal));
+    set('tr-count', `${SK.int(sw.count || 0)} moves`);
+
+    const pay = T.payouts || {};
+    set('tr-pay', eth(pay.total24h));
+    set('tr-pay-u', `${SK.int(pay.count24h || 0)} payout${pay.count24h === 1 ? '' : 's'} in 24h`);
+    set('tr-last', T.lastSweepAt ? String(T.lastSweepAt).replace('T', ' ').slice(11, 16) : dash);
+
+    const a = $('tr-addr');
+    if (a) a.textContent = T.address ? SK.short(T.address) : dash;
+    const d = $('tr-dest');
+    if (d) d.textContent = T.destination ? SK.short(T.destination) : dash;
+  }
+
   function leaders(s) {
     const L = s.leaders || {};
     const rowP = (x, i) => el('li', null, el('a', { href: `/market/?id=${x.id}` }, `#${x.id}`), el('span', { class: 'lb-v' }, SK.power(x.power)), el('span', { class: 'lb-m' }, [x.relic ? 'relic' : null, x.souls > 1 ? `${x.souls} merged` : null].filter(Boolean).join(' · ')));
@@ -78,6 +113,7 @@
     try { s = await fromWorker(); } catch (e) { s = null; }
     if (!s) { try { s = await fromChain(); } catch (e) { s = { collection: {}, partial: true }; } }
     paint(s);
+    treasury(s);
     listed(s);
     leaders(s);
     window.SKTOKEN.panel($('token-panel'), s);
