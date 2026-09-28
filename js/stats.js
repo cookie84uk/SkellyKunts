@@ -68,33 +68,17 @@
     const dash = SK.dash;
     const big = (v) => { try { return v == null ? null : BigInt(v); } catch { return null; } };
     const eth = (v, dp = 6) => { const b = big(v); return b == null ? dash : SK.eth(b, dp); };
-    const units = (v, dp) => {
-      if (v == null) return dash;
-      return (Number(v) / 10 ** dp).toLocaleString('en-US', { maximumFractionDigits: 6 });
-    };
 
+    // Live balances, straight off the chain — these can't be reset by a bot
+    // restart, which is what made this panel read zero before.
     set('tr-now', eth(T.eth));
-    const held = [];
-    if (big(T.weth) > 0n) held.push(`${units(T.weth, 18)} WETH`);
-    if (big(T.usdg) > 0n) held.push(`${units(T.usdg, 6)} USDG`);
-    set('tr-tokens', held.length ? held.join(' · ') : 'nothing right now');
-
-    const sw = T.swept || {};
-    set('tr-hour', eth(sw.ethHour));
-    set('tr-hour-u', `${SK.int(sw.hourCount || 0)} move${sw.hourCount === 1 ? '' : 's'}`);
-    set('tr-day', eth(sw.ethDay));
-    set('tr-total', eth(sw.ethTotal));
-    set('tr-count', sw.ethToPot && big(sw.ethToPot) > 0n ? `${eth(sw.ethToPot)} ETH to the pot` : `${SK.int(sw.count || 0)} moves`);
+    set('tr-wallet', eth(T.projectWallet));
+    set('tr-pot', eth(T.pot));
 
     const pay = T.payouts || {};
     set('tr-pay', eth(pay.total24h));
     set('tr-pay-u', `${SK.int(pay.count24h || 0)} payout${pay.count24h === 1 ? '' : 's'} in 24h`);
     set('tr-last', T.lastSweepAt ? String(T.lastSweepAt).replace('T', ' ').slice(11, 16) : dash);
-
-    const a = $('tr-addr');
-    if (a) a.textContent = T.address ? SK.short(T.address) : dash;
-    const d = $('tr-dest');
-    if (d) d.textContent = T.destination ? SK.short(T.destination) : dash;
   }
 
   function leaders(s) {
