@@ -138,11 +138,12 @@
   function paintSummary() {
     const { usd, owed, owedUsd } = usdOfWallet();
     const inside = mine.skellies.filter((s) => s.holdings.length).length;
-    const total = usd + (owedUsd || 0);
     const parts = [];
-    if (total >= 0.005) parts.push(`≈ ${money(total)} inside your Skellies`);
-    else if (owed > 0n) parts.push(`${SK.eth(owed, 6)} ETH earned, converting each hour`);
-    if (inside) parts.push(`${SK.int(inside)} ready to take out — one click for all`);
+    // Two separate numbers on purpose: what can be taken out right now (tokens
+    // already inside the Ossuary) versus ETH still being converted. Mixed into
+    // one "total" they read as if the converting part were claimable.
+    if (usd >= 0.005) parts.push(`${money(usd)} ready to take out${inside ? ` (${SK.int(inside)} Skellies)` : ''}`);
+    if (owed > 0n) parts.push(`${SK.eth(owed, 6)} ETH earned, converts automatically${owedUsd ? ` (≈ ${money(owedUsd)})` : ''}`);
     $('s-owed').textContent = parts.length ? parts.join(' · ') : 'Nothing earned yet — a Skelly starts earning the hour after it wakes.';
   }
 
@@ -180,9 +181,9 @@
     // the stock/USDG that lands in its Ossuary. It is real money owed to this
     // Skelly; showing it is the difference between "nothing due" and the truth.
     if (s.owedEth && s.owedEth > 0n) owedRows.push(SK.el('tr', null,
-      SK.el('td', null, 'ETH earned (converting)'), SK.el('td', { class: 'num' },
+      SK.el('td', null, 'Earned — not take-outable yet'), SK.el('td', { class: 'num' },
         ethUsd ? `${SK.eth(s.owedEth, 6)} ETH (≈ ${money(Number(E.formatEther(s.owedEth)) * ethUsd)})` : `${SK.eth(s.owedEth, 6)} ETH`),
-      SK.el('td', { class: 'right' }, SK.el('span', { class: 'dim small' }, 'auto'))));
+      SK.el('td', { class: 'right' }, SK.el('span', { class: 'dim small' }, 'converts on the hour'))));
     const portion = s.portion && s.portion.count ? s.portion.idx.map((i, k) => `${(offerings[i] || { symbol: `#${i}` }).symbol} ${s.portion.bps[k] / 100}%`).join(' · ') : 'USDG (default)';
     const off = unbound();
     const canAscend = !off && s.bonesBurned != null && s.bonesBurned > 0n && s.rank < 4;
