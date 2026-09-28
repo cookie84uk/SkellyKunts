@@ -76,7 +76,7 @@
     const tiles = el('div', { class: 'tk-tiles' },
       el('div', { class: 'tile' }, el('span', { class: 'k' }, 'Price'), el('span', { class: 'v' }, fmtPrice(t)), el('span', { class: 'u' }, chg == null ? 'no 24h history yet' : `${chg >= 0 ? '▲' : '▼'} ${Math.abs(chg).toFixed(1)}% · 24h`)),
       el('div', { class: 'tile' }, el('span', { class: 'k' }, 'Market cap'), el('span', { class: 'v' }, t.fdvUsd ? fmtUsd(t.fdvUsd) : `${Number(t.fdvEth).toFixed(1)} ETH`), el('span', { class: 'u' }, '1,000,000,000 supply, fixed')),
-      el('div', { class: 'tile' }, el('span', { class: 'k' }, 'Volume · 24h'), el('span', { class: 'v' }, v ? `${SK.eth(BigInt(v.dayWei), 2)} ETH` : SK.dash), el('span', { class: 'u' }, v ? `${SK.int(v.trades)} trades all time` : '')),
+      el('div', { class: 'tile' }, el('span', { class: 'k' }, 'Volume · 24h'), el('span', { class: 'v' }, v ? `${SK.eth(BigInt(v.dayWei), 2)} ETH` : SK.dash), el('span', { class: 'u' }, v ? `${SK.int(v.trades)} trades in 24h` : '')),
       el('div', { class: 'tile' }, el('span', { class: 'k' }, 'Holders'), el('span', { class: 'v' }, t.holders == null ? SK.dash : SK.int(t.holders)), el('span', { class: 'u' }, 'wallets holding $SKELLY')));
     box.append(tiles);
     // price line removed 2026-09-17 (user): the tiles carry the number, the chart link carries the picture

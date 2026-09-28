@@ -41,8 +41,6 @@
     set('st-vol-u', c.tokenBound ? `${V && V.trades != null ? SK.int(V.trades) + ' trades' : ''}` : '$SKELLY not launched yet');
     const R = s.rewards;
     set('st-paid', R ? ethOf(R.totalWei) : SK.dash);
-    set('st-paid-u', R && R.dayWei && BigInt(R.dayWei) > 0n ? `${ethOf(R.dayWei)} ETH gathered in 24h` : 'from trade fees, all time');
-    set('st-gathered', c.totalGatheredWei == null ? SK.dash : ethOf(c.totalGatheredWei));
     const note = $('st-note');
     if (s.partial) note.textContent = 'Listings, volume and payouts come from the stats service, which is not connected yet; the counts above are read straight from the chain.';
     else note.textContent = `Updated ${String(s.at).replace('T', ' ').slice(0, 16)} UTC · block ${SK.int(s.head)} · refreshed every 5 minutes.`;

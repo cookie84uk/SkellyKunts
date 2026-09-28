@@ -541,7 +541,6 @@ tr:last-child td { border-bottom: 0; }
 /* ------------------------------------------------------------ stats + market */
 .stat-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 @media (min-width: 720px) { .stat-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.stat-tiles .tile { transform: none; }
 .stat-tiles .tile:nth-child(7) { background: var(--bone); } .stat-tiles .tile:nth-child(8) { background: var(--lemon); }
 .stat-tiles .tile .v small { font-size: .55em; letter-spacing: .02em; }
 .stat-note { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
@@ -582,7 +581,6 @@ tr:last-child td { border-bottom: 0; }
 .tk .tk-lede b { color: var(--acid); }
 .tk-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 720px) { .tk-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.tk-tiles .tile { transform: none; }
 .tk-chart { margin: 14px 0 6px; display: grid; gap: 6px; }
 .spark { width: 100%; max-width: 760px; height: auto; display: block; border: 3px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 4px 4px 0 var(--line); }
 .spark.empty { opacity: .35; }
