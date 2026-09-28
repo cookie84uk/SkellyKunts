@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/skelly.css?v=20260928111000">
+<link rel="stylesheet" href="/css/skelly.css?v=20260928113000">
 </head>
 <body>
 
@@ -60,18 +60,34 @@
     <span class="dim small" id="sel-note">Tick 2 or 3 Skellies to merge. The first one you tick is the one that stays.</span>
   </div>
 
+  <div class="filters hidden" id="filters" data-check="filters">
+    <input id="f-search" type="search" inputmode="numeric" placeholder="Search id" aria-label="Search by id">
+    <button class="btn xs on" type="button" data-f="all">All</button>
+    <button class="btn xs" type="button" data-f="awake">Awake</button>
+    <button class="btn xs" type="button" data-f="asleep">Asleep</button>
+    <button class="btn xs" type="button" data-f="relic">Relics</button>
+    <button class="btn xs" type="button" data-f="holding">Holding</button>
+    <button class="btn xs" type="button" data-f="owed">Earning</button>
+    <select id="f-sort" aria-label="Sort">
+      <option value="power">Sort: share points</option>
+      <option value="owed">Sort: earned</option>
+      <option value="id">Sort: id</option>
+    </select>
+    <span class="dim small" id="f-count"></span>
+  </div>
+
   <div class="skellies" id="skellies" data-check="list"></div>
   <p class="dim mt hidden" id="empty">No Skellies in this wallet yet. <a id="empty-mint" href="#">Mint one on OpenSea</a> or buy one on the secondary market. Whatever is inside comes with it.</p>
 </main>
 
-<script src="/vendor/ethers.umd.min.js?v=20260928111000"></script>
-<script src="/config.js?v=20260928111000"></script>
-<script src="/js/abi.js?v=20260928111000"></script>
-<script src="/js/ui.js?v=20260928111000"></script>
-<script src="/js/rpc.js?v=20260928111000"></script>
-<script src="/js/chain.js?v=20260928111000"></script>
-<script src="/js/token.js?v=20260928111000"></script>
-<script src="/js/wallet.js?v=20260928111000"></script>
-<script src="/js/mine.js?v=20260928111000"></script>
+<script src="/vendor/ethers.umd.min.js?v=20260928113000"></script>
+<script src="/config.js?v=20260928113000"></script>
+<script src="/js/abi.js?v=20260928113000"></script>
+<script src="/js/ui.js?v=20260928113000"></script>
+<script src="/js/rpc.js?v=20260928113000"></script>
+<script src="/js/chain.js?v=20260928113000"></script>
+<script src="/js/token.js?v=20260928113000"></script>
+<script src="/js/wallet.js?v=20260928113000"></script>
+<script src="/js/mine.js?v=20260928113000"></script>
 </body>
 </html>

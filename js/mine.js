@@ -52,6 +52,14 @@
   // a refresh keeps the wallet that was connected in this tab (no prompt)
   if (C.mock || SK.configured('skellies')) wallet.resume();
 
+  // Live ETH/USD so ETH amounts can be shown with a dollar value beside them.
+  // Same stats payload the token panel uses; if it never arrives, ETH shows as
+  // ETH only.
+  let ethUsd = null;
+  if (window.SKTOKEN && window.SKTOKEN.stats) {
+    window.SKTOKEN.stats().then((s) => { ethUsd = s && s.prices ? s.prices.ethUsd : null; if (mine) paint(); }).catch(() => {});
+  }
+
   async function load() {
     if (!wallet.address) return paint();
     $('addr').textContent = wallet.address;
@@ -82,18 +90,73 @@
     $('s-count').textContent = SK.int(mine.skellies.length);
     $('s-bal').textContent = m && m.balance != null ? `${SK.tokens(m.balance)} ${sym()}` : SK.dash;
     $('s-allow').textContent = m && m.allowance != null ? `${SK.tokens(m.allowance)} ${sym()}` : SK.dash;
-    // The summary line: everything the wallet's Skellies have earned but that
-    // has not yet been swapped into their Ossuary, plus how many already hold
-    // something take-outable. This used to be a hardcoded "nothing owed".
-    const owed = mine.skellies.reduce((a, s) => a + (s.owedEth || 0n), 0n);
-    const inside = mine.skellies.filter((s) => s.holdings.length).length;
-    const parts = [];
-    if (owed > 0n) parts.push(`${SK.eth(owed, 6)} ETH earned, converting each hour`);
-    if (inside) parts.push(`${SK.int(inside)} Skell${inside === 1 ? 'y' : 'ies'} holding stock you can take out`);
-    $('s-owed').textContent = parts.length ? parts.join(' · ') : 'Nothing earned yet — a Skelly starts earning the hour after it wakes.';
-    for (const s of mine.skellies) list.append(skellyCard(s));
+    paintSummary();
+    const fb = $('filters');
+    if (fb) fb.classList.toggle('hidden', !mine.skellies.length);
+    const shown = visible();
+    const fc = $('f-count');
+    if (fc) fc.textContent = shown.length === mine.skellies.length
+      ? `${SK.int(shown.length)} Skellies`
+      : `${SK.int(shown.length)} of ${SK.int(mine.skellies.length)} shown`;
+    for (const s of shown) list.append(skellyCard(s));
     SK.lazy(list);
     updateBulk();
+  }
+
+  // ------------------------------------------------------------ filter + sort
+  let filter = 'all';
+  let search = '';
+  let sortBy = 'power';
+
+  function visible() {
+    if (!mine) return [];
+    let out = mine.skellies.slice();
+    if (search) out = out.filter((s) => String(s.id).includes(search));
+    if (filter === 'awake') out = out.filter((s) => s.raised === true);
+    else if (filter === 'asleep') out = out.filter((s) => s.raised === false);
+    else if (filter === 'relic') out = out.filter((s) => s.relic);
+    else if (filter === 'holding') out = out.filter((s) => s.holdings.length > 0);
+    else if (filter === 'owed') out = out.filter((s) => s.owedEth && s.owedEth > 0n);
+    if (sortBy === 'id') out.sort((a, b) => a.id - b.id);
+    else if (sortBy === 'owed') out.sort((a, b) => (BigInt(b.owedEth || 0n) > BigInt(a.owedEth || 0n) ? 1 : -1));
+    else out.sort((a, b) => b.power - a.power);
+    return out;
+  }
+
+  // Dollars where we can: USDG is a dollar; ETH credit is priced with the live
+  // ETH/USD. Tokenised stocks stay in units — the site has no stock price.
+  const money = (n) => (n == null || !isFinite(n) ? SK.dash : n < 0.01 ? '<$0.01' : '$' + n.toFixed(2));
+
+  function usdOfWallet() {
+    let usd = 0;
+    for (const s of mine.skellies) for (const h of s.holdings) if ((h.symbol || '').toUpperCase() === 'USDG') usd += Number(h.amount) / 1e6;
+    const owed = mine.skellies.reduce((a, s) => a + BigInt(s.owedEth || 0n), 0n);
+    const owedEth = Number(E.formatEther(owed));
+    return { usd, owed, owedUsd: ethUsd ? owedEth * ethUsd : null };
+  }
+
+  function paintSummary() {
+    const { usd, owed, owedUsd } = usdOfWallet();
+    const inside = mine.skellies.filter((s) => s.holdings.length).length;
+    const total = usd + (owedUsd || 0);
+    const parts = [];
+    if (total >= 0.005) parts.push(`≈ ${money(total)} inside your Skellies`);
+    else if (owed > 0n) parts.push(`${SK.eth(owed, 6)} ETH earned, converting each hour`);
+    if (inside) parts.push(`${SK.int(inside)} ready to take out — one click for all`);
+    $('s-owed').textContent = parts.length ? parts.join(' · ') : 'Nothing earned yet — a Skelly starts earning the hour after it wakes.';
+  }
+
+  // Guarded: a stale page cache could serve the HTML without the filter bar.
+  if ($('f-search')) {
+    $('f-search').addEventListener('input', (e) => { search = e.target.value.trim(); paint(); });
+    $('f-sort').addEventListener('change', (e) => { sortBy = e.target.value; paint(); });
+    for (const b of document.querySelectorAll('#filters [data-f]')) {
+      b.addEventListener('click', () => {
+        filter = b.dataset.f;
+        for (const o of document.querySelectorAll('#filters [data-f]')) o.classList.toggle('on', o === b);
+        paint();
+      });
+    }
   }
 
   const rankName = (r) => (r < 0 ? 'never woken' : r === 0 ? 'Awake' : `Level ${r}`);
@@ -108,7 +171,8 @@
       s.relic ? SK.el('span', { class: 'badge relic' }, 'relic ×1.5') : null,
       s.souls > 1 ? SK.el('span', { class: 'badge souls' }, `${s.souls} souls`) : null,
     ];
-    const holdRows = s.holdings.map((h) => SK.el('tr', null, SK.el('td', null, h.symbol), SK.el('td', { class: 'num' }, SK.units(h.amount, h.decimals, h.decimals === 6 ? 2 : 4)),
+    const holdRows = s.holdings.map((h) => SK.el('tr', null, SK.el('td', null, h.symbol), SK.el('td', { class: 'num' },
+      (h.symbol || '').toUpperCase() === 'USDG' ? money(Number(h.amount) / 1e6) : SK.units(h.amount, h.decimals, h.decimals === 6 ? 2 : 4)),
       SK.el('td', { class: 'right' }, SK.el('button', { class: 'btn xs', onclick: () => doUnearthOne(s, h) }, 'Take out'))));
     const owedRows = s.owedSlots.map((h) => SK.el('tr', null, SK.el('td', null, `${h.symbol} (waiting)`), SK.el('td', { class: 'num' }, SK.units(h.amount, h.decimals, 4)),
       SK.el('td', { class: 'right' }, SK.el('button', { class: 'btn xs', onclick: () => doUnearthOwed(s, h) }, 'Take'))));
@@ -116,7 +180,8 @@
     // the stock/USDG that lands in its Ossuary. It is real money owed to this
     // Skelly; showing it is the difference between "nothing due" and the truth.
     if (s.owedEth && s.owedEth > 0n) owedRows.push(SK.el('tr', null,
-      SK.el('td', null, 'ETH earned (converting)'), SK.el('td', { class: 'num' }, SK.eth(s.owedEth, 6)),
+      SK.el('td', null, 'ETH earned (converting)'), SK.el('td', { class: 'num' },
+        ethUsd ? `${SK.eth(s.owedEth, 6)} ETH (≈ ${money(Number(E.formatEther(s.owedEth)) * ethUsd)})` : `${SK.eth(s.owedEth, 6)} ETH`),
       SK.el('td', { class: 'right' }, SK.el('span', { class: 'dim small' }, 'auto'))));
     const portion = s.portion && s.portion.count ? s.portion.idx.map((i, k) => `${(offerings[i] || { symbol: `#${i}` }).symbol} ${s.portion.bps[k] / 100}%`).join(' · ') : 'USDG (default)';
     const off = unbound();

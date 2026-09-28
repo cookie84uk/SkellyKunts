@@ -298,6 +298,13 @@ tr:last-child td { border-bottom: 0; }
 .hold th { font-size: 15px; }
 .sel { position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; margin: 0; accent-color: var(--pink); z-index: 2; background: var(--bone); border: 2px solid var(--line); border-radius: 4px; box-shadow: 2px 2px 0 var(--line); cursor: pointer; }
 .bulk { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.filters input[type="search"], .filters select {
+  background: var(--panel); color: var(--bone); border: 2px solid var(--line);
+  border-radius: 6px; padding: 6px 10px; font: inherit; font-size: 14px;
+}
+.filters input[type="search"] { width: 120px; }
+.filters .btn.on { outline: 3px solid var(--line); outline-offset: 1px; }
 
 /* ------------------------------------------------------------ modal */
 .veil { position: fixed; inset: 0; background: rgba(5,4,10,.78); display: none; z-index: 100; padding: var(--gutter); overflow: auto; }
