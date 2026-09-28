@@ -130,23 +130,17 @@
   function usdOfWallet() {
     let usd = 0;
     for (const s of mine.skellies) for (const h of s.holdings) if ((h.symbol || '').toUpperCase() === 'USDG') usd += Number(h.amount) / 1e6;
-    const owed = mine.skellies.reduce((a, s) => a + BigInt(s.owedEth || 0n), 0n);
-    const owedEth = Number(E.formatEther(owed));
-    return { usd, owed, owedUsd: ethUsd ? owedEth * ethUsd : null };
+    return usd;
   }
 
   function paintSummary() {
-    const { usd, owed, owedUsd } = usdOfWallet();
+    // One number, and only a number they can act on: what is actually take-outable
+    // right now. Nothing speculative, no "earned in total" that isn't payouts.
+    const usd = usdOfWallet();
     const inside = mine.skellies.filter((s) => s.holdings.length).length;
-    // Plain facts, in order: what you have earned, what is available right now,
-    // and what is still waiting to be paid out. Never one blended number — an
-    // "earned" total that includes money not yet paid reads as take-outable.
-    if (usd < 0.005 && owed === 0n) { $('s-owed').textContent = 'Nothing earned yet — a Skelly starts earning the hour after it wakes.'; return; }
-    const bits = [];
-    if (owedUsd != null) bits.push(`You've earned ${money(usd + owedUsd)} in total`);
-    if (usd >= 0.005) bits.push(`${money(usd)} is available to take out now${inside ? ` (${SK.int(inside)} Skellies)` : ''}`);
-    if (owed > 0n) bits.push(`${SK.eth(owed, 6)} ETH${owedUsd != null ? ` (≈ ${money(owedUsd)})` : ''} is waiting to be paid out`);
-    $('s-owed').textContent = bits.join('. ') + '.';
+    $('s-owed').textContent = usd >= 0.005
+      ? `You can take out ${money(usd)} right now${inside ? ` — from ${SK.int(inside)} Skellies` : ''}.`
+      : 'Nothing to take out yet. A Skelly starts earning the hour after it wakes.';
   }
 
   // Guarded: a stale page cache could serve the HTML without the filter bar.
