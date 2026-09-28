@@ -82,6 +82,15 @@
     $('s-count').textContent = SK.int(mine.skellies.length);
     $('s-bal').textContent = m && m.balance != null ? `${SK.tokens(m.balance)} ${sym()}` : SK.dash;
     $('s-allow').textContent = m && m.allowance != null ? `${SK.tokens(m.allowance)} ${sym()}` : SK.dash;
+    // The summary line: everything the wallet's Skellies have earned but that
+    // has not yet been swapped into their Ossuary, plus how many already hold
+    // something take-outable. This used to be a hardcoded "nothing owed".
+    const owed = mine.skellies.reduce((a, s) => a + (s.owedEth || 0n), 0n);
+    const inside = mine.skellies.filter((s) => s.holdings.length).length;
+    const parts = [];
+    if (owed > 0n) parts.push(`${SK.eth(owed, 6)} ETH earned, converting each hour`);
+    if (inside) parts.push(`${SK.int(inside)} Skell${inside === 1 ? 'y' : 'ies'} holding stock you can take out`);
+    $('s-owed').textContent = parts.length ? parts.join(' · ') : 'Nothing earned yet — a Skelly starts earning the hour after it wakes.';
     for (const s of mine.skellies) list.append(skellyCard(s));
     SK.lazy(list);
     updateBulk();
