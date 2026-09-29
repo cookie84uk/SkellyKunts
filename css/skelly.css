@@ -175,6 +175,11 @@ p { margin: 0 0 1em; }
 .tile:nth-child(4) { background: var(--pink); transform: rotate(.5deg); }
 .tile:nth-child(5) { background: var(--tangerine); transform: rotate(-.7deg); }
 .tile:nth-child(6) { background: var(--violet); transform: rotate(.4deg); }
+.tile:nth-child(7) { background: var(--bone); transform: rotate(-.5deg); }
+.tile:nth-child(8) { background: var(--blood); transform: rotate(.6deg); }
+/* a P&L tile colours by its sign, whatever position it lands in */
+.tile.pos { background: var(--acid); }
+.tile.neg { background: var(--blood); }
 .tile .k { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
 .tile .v { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); line-height: 1; letter-spacing: .02em; overflow-wrap: anywhere; }
 .tile .u { font-size: 12px; font-weight: 500; opacity: .85; overflow-wrap: anywhere; }

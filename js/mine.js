@@ -10,8 +10,11 @@
   const wallet = new window.SkellyWallet();
   const $ = (id) => document.getElementById(id);
   const ADDR = C.contracts;
+  // The bot's public API: leaderboards, the feed, and the wallet summary.
+  const statsUrl = SK.linkOk(C.stats && C.stats.url) ? C.stats.url.replace(/\/+$/, '') : null;
 
   let consts = null, offerings = [], mine = null, selected = new Set();
+  let summary = null; // OpenSea value + net P&L, from the bot's public summary
   // True while marrow() is the zero address: the mint is open, $SKELLY has
   // not launched, and raise / ascend / absorb revert NotBound.
   const unbound = () => !!consts && consts.marrowBound === false;
@@ -45,7 +48,7 @@
   $('btn-connect').addEventListener('click', async () => {
     try { await wallet.connect(); await load(); } catch (e) { SK.toast(wallet.explain(e), 'bad'); }
   });
-  $('btn-disconnect').addEventListener('click', () => { wallet.forget(); mine = null; selected.clear(); paint(); });
+  $('btn-disconnect').addEventListener('click', () => { wallet.forget(); mine = null; summary = null; selected.clear(); paint(); });
   $('btn-refresh').addEventListener('click', load);
   if (window.SKTOKEN) $('my-buy').append(window.SKTOKEN.buyButton('btn xs lemon buy', 'Buy $SKELLY'));
   wallet.onChange = () => { if (wallet.address) load(); else paint(); };
@@ -80,6 +83,15 @@
       // Collection totals ride in separately, so the page paints the wallet's own
       // Skellies first and the share-of-pot tile fills in a moment later.
       chain.board().then((b) => { board = b; paintTiles(); }).catch(() => {});
+      // Two headline numbers that only the bot can produce: what this wallet is
+      // worth on OpenSea, and its net P&L. Never blocks the page.
+      summary = null;
+      if (statsUrl) {
+        fetch(`${statsUrl}/api/wallet-summary?address=${wallet.address}`)
+          .then((r) => (r.ok ? r.json() : null))
+          .then((s) => { summary = s; paintTiles(); })
+          .catch(() => {});
+      }
       SK.netStatus(true);
     } catch (e) { SK.netStatus(false); SK.toast('Could not read the chain right now: ' + (e.message || e), 'bad'); mine = { ids: [], skellies: [], marrow: null }; }
     selected = new Set([...selected].filter((id) => mine.ids.includes(id)));
@@ -174,7 +186,7 @@
     const takeUsd = usdOfWallet();
     const totalPower = board && board.totalPower != null ? Number(board.totalPower) : null;
 
-    const tile = (k, v, u) => SK.el('div', { class: 'tile' },
+    const tile = (k, v, u, cls) => SK.el('div', { class: 'tile' + (cls ? ' ' + cls : '') },
       SK.el('span', { class: 'k' }, k), SK.el('span', { class: 'v' }, v), SK.el('span', { class: 'u' }, u));
 
     box.append(
@@ -191,6 +203,25 @@
         skellyUsd ? `≈ ${money(burnedN * skellyUsd)} · wake, level, merge` : 'wake, level and merge'),
       tile('Relics', SK.int(relics),
         relics ? '×1.5 share points each' : 'none in this wallet'));
+
+    // The two numbers only the bot can produce. Absent until the summary lands,
+    // and simply not drawn if it never does.
+    if (summary) {
+      const pf = summary.portfolio;
+      const p = summary.pnl;
+      const ethPx = summary.prices && summary.prices.ethUsd ? summary.prices.ethUsd : null;
+      const usd0 = (n) => (n == null || !isFinite(n) ? SK.dash
+        : '$' + Number(n).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+      const signedUsd = (n) => `${n < 0 ? '−' : '+'}${usd0(Math.abs(n))}`;
+      box.append(
+        tile('OpenSea value', pf ? usd0(pf.totalValueUsd) : SK.dash,
+          pf ? "NFTs + tokens · OpenSea's own valuation" : 'not available right now'),
+        tile(p ? `Net P&L · ${SK.int(p.days)}d` : 'Net P&L',
+          p ? `${p.netEth < 0 ? '−' : '+'}${Math.abs(p.netEth).toFixed(4)} ETH` : SK.dash,
+          p ? `${ethPx ? `${signedUsd(p.netEth * ethPx)} · ` : ''}${SK.int(p.buys)} buys / ${SK.int(p.sells)} sells` : 'not available right now',
+          // colour follows the sign, not the tile's position in the row
+          p ? (p.netEth >= 0 ? 'pos' : 'neg') : null));
+    }
   }
 
   // Guarded: a stale page cache could serve the HTML without the filter bar.
