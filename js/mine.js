@@ -52,12 +52,19 @@
   // a refresh keeps the wallet that was connected in this tab (no prompt)
   if (C.mock || SK.configured('skellies')) wallet.resume();
 
-  // Live ETH/USD so ETH amounts can be shown with a dollar value beside them.
-  // Same stats payload the token panel uses; if it never arrives, ETH shows as
-  // ETH only.
+  // Live ETH/USD and $SKELLY/USD, so ETH and $SKELLY amounts can carry a dollar
+  // value beside them. Same stats payload the token panel uses; if it never
+  // arrives they show as their own unit only.
   let ethUsd = null;
+  let skellyUsd = null;
+  let board = null; // collection totals, for the share-of-every-pot tile
   if (window.SKTOKEN && window.SKTOKEN.stats) {
-    window.SKTOKEN.stats().then((s) => { ethUsd = s && s.prices ? s.prices.ethUsd : null; if (mine) paint(); }).catch(() => {});
+    window.SKTOKEN.stats().then((s) => {
+      const p = (s && s.prices) || null;
+      ethUsd = p ? p.ethUsd : null;
+      skellyUsd = p ? p.skellyUsd : null;
+      if (mine) paint();
+    }).catch(() => {});
   }
 
   async function load() {
@@ -70,6 +77,9 @@
       if (!consts || consts.marrowBound !== true) consts = await chain.constants();
       if (!offerings.length) offerings = await chain.offerings();
       mine = await chain.mine(wallet.address);
+      // Collection totals ride in separately, so the page paints the wallet's own
+      // Skellies first and the share-of-pot tile fills in a moment later.
+      chain.board().then((b) => { board = b; paintTiles(); }).catch(() => {});
       SK.netStatus(true);
     } catch (e) { SK.netStatus(false); SK.toast('Could not read the chain right now: ' + (e.message || e), 'bad'); mine = { ids: [], skellies: [], marrow: null }; }
     selected = new Set([...selected].filter((id) => mine.ids.includes(id)));
@@ -84,6 +94,7 @@
     $('bulk').classList.toggle('hidden', !on || !mine || !mine.skellies.length);
     $('empty').classList.toggle('hidden', !on || !mine || mine.skellies.length > 0);
     $('launch-note').classList.toggle('hidden', !on || !mine || !unbound());
+    $('tiles-panel').classList.toggle('hidden', !on || !mine);
     const list = $('skellies'); list.innerHTML = '';
     if (!on || !mine) return;
     const m = mine.marrow;
@@ -91,6 +102,7 @@
     $('s-bal').textContent = m && m.balance != null ? `${SK.tokens(m.balance)} ${sym()}` : SK.dash;
     $('s-allow').textContent = m && m.allowance != null ? `${SK.tokens(m.allowance)} ${sym()}` : SK.dash;
     paintSummary();
+    paintTiles();
     const fb = $('filters');
     if (fb) fb.classList.toggle('hidden', !mine.skellies.length);
     const shown = visible();
@@ -144,6 +156,41 @@
     $('s-owed').textContent = usd >= 0.005
       ? `You can take out ${money(usd)} right now${inside ? ` — from ${SK.int(inside)} Skellies` : ''}.`
       : 'Nothing to take out yet. A Skelly starts earning the hour after it wakes.';
+  }
+
+  // The wallet's own dashboard, summed from the same Skelly state the cards use.
+  function paintTiles() {
+    const box = $('my-tiles');
+    if (!box || !mine) return;
+    box.innerHTML = '';
+    const list = mine.skellies;
+    const sum = (fn) => list.reduce((a, s) => a + BigInt(fn(s) || 0n), 0n);
+    const myPower = list.reduce((a, s) => a + (s.power || 0), 0);
+    const awake = list.filter((s) => s.raised === true).length;
+    const relics = list.filter((s) => s.relic).length;
+    const burned = sum((s) => s.bonesBurned);
+    const burnedN = Number(E.formatEther(burned));
+    const owedWei = sum((s) => s.owedEth);
+    const takeUsd = usdOfWallet();
+    const totalPower = board && board.totalPower != null ? Number(board.totalPower) : null;
+
+    const tile = (k, v, u) => SK.el('div', { class: 'tile' },
+      SK.el('span', { class: 'k' }, k), SK.el('span', { class: 'v' }, v), SK.el('span', { class: 'u' }, u));
+
+    box.append(
+      tile('Skellies', SK.int(list.length),
+        `${SK.int(awake)} awake · of ${board && board.totalSummoned != null ? SK.int(board.totalSummoned) : SK.dash} minted`),
+      tile('Share points', SK.power(myPower),
+        totalPower ? `${((myPower / totalPower) * 100).toFixed(2)}% of every pot` : 'your slice of each hourly pot'),
+      tile('Take out now', takeUsd >= 0.005 ? money(takeUsd) : SK.dash,
+        takeUsd >= 0.005 ? 'ready inside the Ossuary' : 'nothing sitting ready'),
+      tile('Waiting to be paid', `${SK.eth(owedWei, 6)} ETH`,
+        ethUsd ? `≈ ${money(Number(E.formatEther(owedWei)) * ethUsd)} · swapped in each hour` : 'swapped into the Skelly each hour'),
+      // a big burn count would break mid-digits in a tile this narrow
+      tile('$SKELLY burned', burnedN >= 1e6 ? `${(burnedN / 1e6).toFixed(2)}M` : SK.tokens(burned),
+        skellyUsd ? `≈ ${money(burnedN * skellyUsd)} · wake, level, merge` : 'wake, level and merge'),
+      tile('Relics', SK.int(relics),
+        relics ? '×1.5 share points each' : 'none in this wallet'));
   }
 
   // Guarded: a stale page cache could serve the HTML without the filter bar.
