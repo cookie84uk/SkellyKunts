@@ -678,3 +678,12 @@ tr:last-child td { border-bottom: 0; }
 .badge.merge { background: var(--violet); color: var(--line); }
 .badge.reward { background: var(--sky); color: var(--line); }
 .badge.lose, .badge.roll { background: var(--panel-2); color: var(--bone-2); }
+
+/* ---- share cards */
+.share-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.lb-list li .btn.xs { margin-left: auto; }
+.share-canvas {
+  display: block; width: 100%; height: auto; background: var(--ink);
+  border: 3px solid var(--line); border-radius: var(--radius); box-shadow: 5px 5px 0 var(--line);
+}
+.share-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 14px; }

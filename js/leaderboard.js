@@ -43,18 +43,22 @@
   }
 
   // ---------------------------------------------------------------- roll
+  let lastHead = null; // newest indexed block, so cards can say "how long ago"
   let rollPeriod = 'all';
   async function paintRoll() {
     $('rl-note').textContent = 'reading…';
     const d = await get(`/api/roll/leaderboard?period=${rollPeriod}`);
     if (!d) { $('rl-note').textContent = 'no data'; $('rl-table').innerHTML = ''; $('rl-biggest').innerHTML = ''; return; }
     const idx = d.indexed || {};
+    if (idx.lastBlock) lastHead = idx.lastBlock;
     $('rl-note').textContent = idx.indexing ? `indexing… ${SK.int(idx.events || 0)} events` : `${SK.int(idx.events || 0)} events indexed`;
     $('rl-biggest').innerHTML = '';
     if (d.biggest) {
       $('rl-biggest').append(el('div', { class: 'panel tk' },
         el('div', { class: 'panel-head' }, el('h3', null, 'Biggest single win'), el('span', { class: 'dim small' }, when(d.biggest.block, idx.lastBlock))),
-        el('p', { class: 'mk-item' }, el('span', { class: 'p' }, `${skelly(d.biggest.amount)} $SKELLY`), ' ', walletCell(d.biggest.wallet))));
+        el('p', { class: 'mk-item' }, el('span', { class: 'p' }, `${skelly(d.biggest.amount)} $SKELLY`), ' ', walletCell(d.biggest.wallet)),
+        el('div', { class: 'share-row' },
+          el('button', { class: 'btn xs lemon', type: 'button', onclick: () => openCard({ kind: 'win', amount: d.biggest.amount, wallet: d.biggest.wallet, block: d.biggest.block, tx: d.biggest.tx }) }, 'Make a card'))));
     }
     $('rl-table').innerHTML = '';
     $('rl-table').append(table([
@@ -88,11 +92,14 @@
   }
 
   // ---------------------------------------------------------------- feed
+  // rows that can become a share card
+  const SHAREABLE = new Set(['win', 'claim', 'reward', 'awaken', 'level', 'merge']);
   let lastFeedTop = null;
   async function paintFeed() {
     const d = await get('/api/feed?limit=40');
     const box = $('feed');
     if (!d || !d.items) { box.innerHTML = ''; box.append(el('li', { class: 'dim' }, 'Feed not connected yet.')); return; }
+    if (d.indexed && d.indexed.lastBlock) lastHead = d.indexed.lastBlock;
     const top = d.items[0] ? d.items[0].tx : null;
     if (top === lastFeedTop) return; // nothing new
     lastFeedTop = top;
@@ -103,8 +110,137 @@
         ' ',
         el('span', null, it.text),
         ' ',
-        it.tx ? el('a', { class: 'dim small', href: SK.explorerTx(it.tx), target: '_blank', rel: 'noopener' }, 'tx') : null));
+        it.tx ? el('a', { class: 'dim small', href: SK.explorerTx(it.tx), target: '_blank', rel: 'noopener' }, 'tx') : null,
+        SHAREABLE.has(it.kind) ? el('button', { class: 'btn xs', type: 'button', onclick: () => openCard(it) }, 'card') : null));
     }
+  }
+
+  // ---------------------------------------------------------------- share cards
+  // A 1200×630 card drawn on a canvas so it can be downloaded and posted. The art
+  // is read from the chain by token id; if that read fails the card still draws.
+  const SITE = 'https://skellykuntz.com';
+  const chain = (() => { try { return window.SkellyChain ? window.SkellyChain.make() : null; } catch (e) { return null; } })();
+
+  const image = (src) => new Promise((res) => {
+    const i = new Image();
+    i.crossOrigin = 'anonymous';
+    i.onload = () => res(i);
+    i.onerror = () => res(null);
+    i.src = src;
+  });
+
+  async function artFor(id) {
+    if (!id || !chain) return null;
+    let form = null;
+    try { const [t] = await chain.tokens([id]); form = t && t.form; } catch (e) { form = null; }
+    return form ? image(SK.artUrl(form)) : null;
+  }
+
+  // What the card says, per event kind.
+  function spec(it) {
+    const eth = (v) => (v == null ? null : `${SK.eth(BigInt(v), 8)} ETH`);
+    switch (it.kind) {
+      case 'win': return { tag: 'Skelly Roll', head: 'rolled a winner', big: `${skelly(it.amount)} $SKELLY`, sub: 'paid out by the beacon, on-chain' };
+      case 'claim': return { tag: `Skelly #${it.tokenId}`, head: 'cashed out', big: eth(it.amount) || 'payout taken', sub: 'out of the Skelly, into the wallet' };
+      case 'reward': return { tag: `Skelly #${it.tokenId}`, head: 'got paid', big: eth(it.amount) || 'reward paid in', sub: 'the hourly pot, straight into the Skelly' };
+      case 'awaken': return { tag: `Skelly #${it.tokenId}`, head: 'woke up', big: it.amount ? `${skelly(it.amount)} $SKELLY` : 'awake', sub: 'burned to wake it — earning every hour' };
+      case 'level': return { tag: `Skelly #${it.tokenId}`, head: 'levelled up', big: it.rank ? `Level ${it.rank}` : 'Level up', sub: 'a bigger slice of every pot' };
+      case 'merge': return { tag: `Skelly #${it.tokenId}`, head: 'absorbed the bones', big: 'Merged', sub: 'power combined into one' };
+      default: return { tag: 'SkellyKuntz', head: it.text, big: '', sub: '' };
+    }
+  }
+
+  const BANG = '"Bangers", Impact, "Arial Narrow", sans-serif';
+  const RUB = '"Rubik", Arial, sans-serif';
+
+  function drawCard(canvas, s, art) {
+    const W = 1200, H = 630;
+    canvas.width = W; canvas.height = H;
+    const g = canvas.getContext('2d');
+    const glow = (x, y, r, col) => {
+      const rg = g.createRadialGradient(x, y, 0, x, y, r);
+      rg.addColorStop(0, col); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = rg; g.fillRect(0, 0, W, H);
+    };
+    const rr = (x, y, w, h, r) => {
+      g.beginPath();
+      g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+      g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+    };
+    const label = (txt, x, y, font, colour, shadow) => {
+      g.font = font; g.textBaseline = 'alphabetic';
+      if (shadow) { g.fillStyle = shadow; g.fillText(txt, x + 4, y + 4); }
+      g.fillStyle = colour; g.fillText(txt, x, y);
+    };
+
+    g.fillStyle = '#0f0d16'; g.fillRect(0, 0, W, H);
+    glow(W * 0.98, -140, 560, 'rgba(255,79,163,.22)');
+    glow(W * 0.02, H + 150, 560, 'rgba(138,107,255,.20)');
+    g.fillStyle = 'rgba(255,255,255,.05)';
+    for (let y = 7; y < H; y += 10) for (let x = 7; x < W; x += 10) { g.beginPath(); g.arc(x, y, 1.5, 0, 6.2832); g.fill(); }
+
+    let x = 92;
+    if (art) {
+      const aw = 340, ah = 472, ax = 62, ay = (H - ah) / 2;
+      g.fillStyle = '#f4ecd8'; rr(ax + 8, ay + 8, aw, ah, 8); g.fill();
+      g.fillStyle = '#07060a'; rr(ax, ay, aw, ah, 8); g.fill();
+      g.save(); rr(ax + 6, ay + 6, aw - 12, ah - 12, 5); g.clip(); g.drawImage(art, ax + 6, ay + 6, aw - 12, ah - 12); g.restore();
+      x = ax + aw + 56;
+    }
+
+    label('SKELLYKUNTZ', x, 150, `400 28px ${BANG}`, '#a4ff3d');
+
+    g.font = `700 22px ${RUB}`;
+    const tw = g.measureText(s.tag).width;
+    g.fillStyle = '#ffe14d'; rr(x, 176, tw + 28, 40, 6); g.fill();
+    g.fillStyle = '#07060a'; g.textBaseline = 'middle'; g.fillText(s.tag, x + 14, 197);
+
+    label(s.head, x, 312, `400 66px ${BANG}`, '#f4ecd8', '#ff4fa3');
+    if (s.big) label(s.big, x, 412, `400 84px ${BANG}`, '#ffe14d', '#07060a');
+    label(s.sub, x, 456, `400 23px ${RUB}`, '#a49db6');
+
+    g.fillStyle = 'rgba(244,236,216,.25)'; g.fillRect(x, 494, W - x - 92, 3);
+    g.font = `500 21px ${RUB}`; g.textBaseline = 'alphabetic';
+
+    const meta = [s.who, s.when].filter(Boolean).join('  ·  ');
+    g.fillStyle = '#d9d0bb'; g.fillText(meta, x, 534);
+
+    g.fillStyle = '#a49db6'; g.font = `500 19px ${RUB}`;
+    g.fillText(`${SITE.replace('https://', '')}   ·   ${s.txShort || ''}`.trim(), x, 580);
+  }
+
+  const shortTx = (tx) => (tx ? `tx ${String(tx).slice(0, 10)}…` : '');
+
+  function download(canvas, name) {
+    canvas.toBlob((b) => {
+      if (!b) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = name;
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }, 'image/png');
+  }
+
+  function tweet(s) {
+    const text = s.quote || `${s.tag} — ${s.head}${s.big ? `: ${s.big}` : ''}`;
+    const body = `${text}\n\n1,100 skeletons on Robinhood Chain, paid every hour in stocks.`;
+    return 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(body) + '&url=' + encodeURIComponent(`${SITE}/leaderboard/`);
+  }
+
+  async function openCard(it) {
+    const base = spec(it);
+    const s = { ...base, who: it.wallet ? SK.short(it.wallet) : '', when: when(it.block, lastHead), txShort: shortTx(it.tx) };
+    if (it.kind === 'win') s.quote = `${s.big} won on Skelly Roll 💀`;
+    const canvas = el('canvas', { class: 'share-canvas', width: 1200, height: 630 });
+    const acts = el('div', { class: 'share-acts' });
+    SK.modal({ body: el('div', { class: 'share' }, canvas, acts), ok: null, cancel: 'Close', wide: true });
+    acts.append(
+      el('button', { class: 'btn sm lemon', type: 'button', onclick: () => download(canvas, `skelly-${it.kind}-${it.tokenId || 'roll'}.png`) }, 'Download card'),
+      el('a', { class: 'btn sm acid', href: tweet(s), target: '_blank', rel: 'noopener' }, 'Post on X'));
+    const art = await artFor(it.tokenId);
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+    drawCard(canvas, s, art);
   }
 
   // ---------------------------------------------------------------- wiring
