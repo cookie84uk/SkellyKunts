@@ -48,16 +48,21 @@
   // lookup by number: the chain answers, the book adds the price if listed
   async function lookup(n) {
     const out = $('mk-card');
+    // the answer belongs on screen, not below the 110-card grid
+    const show = (node) => {
+      out.innerHTML = '';
+      out.append(node);
+      out.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+    if (!(n >= 1 && n <= 1100)) { show(el('p', { class: 'lst-err' }, 'A number between 1 and 1,100.')); return; }
     out.innerHTML = '';
-    if (!(n >= 1 && n <= 1100)) { out.append(el('p', { class: 'lst-err' }, 'A number between 1 and 1,100.')); return; }
     out.append(el('p', { class: 'dim' }, 'Reading the chain…'));
     let t = null;
     try { [t] = await chain.tokens([n]); } catch (e) { t = null; }
-    out.innerHTML = '';
-    if (!t) { out.append(el('p', { class: 'lst-err' }, 'Could not read the chain. Try again in a moment.')); return; }
-    if (t.minted === false) { out.append(el('p', { class: 'dim' }, `Skelly #${n} has not been minted yet.`)); return; }
+    if (!t) { show(el('p', { class: 'lst-err' }, 'Could not read the chain. Try again in a moment.')); return; }
+    if (t.minted === false) { show(el('p', { class: 'dim' }, `Skelly #${n} has not been minted yet.`)); return; }
     const listing = book && book.items ? book.items.find((x) => x.id === n) : null;
-    out.append(el('div', { class: 'panel' }, window.SKCARD.full(t, listing)));
+    show(el('div', { class: 'panel' }, window.SKCARD.full(t, listing)));
   }
 
   $('mk-sort').addEventListener('change', () => grid(book));

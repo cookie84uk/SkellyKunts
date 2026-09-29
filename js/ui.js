@@ -111,7 +111,7 @@
 
   const logo = `<svg viewBox="0 0 36 36" aria-hidden="true"><path d="M18 3C10 3 5 8.5 5 16c0 5 2.3 8.4 5.6 10.6V32h14.8v-5.4C28.7 24.4 31 21 31 16c0-7.5-5-13-13-13z" fill="#f4ecd8" stroke="#07060a" stroke-width="2.4" stroke-linejoin="round"/><circle cx="13" cy="17" r="3.2" fill="#07060a"/><circle cx="23" cy="17" r="3.2" fill="#07060a"/><path d="M15 27v4M18 27v4M21 27v4" stroke="#07060a" stroke-width="2.2"/></svg>`;
   U.chrome = (page) => {
-    const nav = [['/', 'Board'], ['/stats/', 'Stats'], ['/roll/', 'Roll'], ['/my/', 'My Skellies'], ['/docs/', 'Docs']];
+    const nav = [['/', 'Board'], ['/market/', 'Market'], ['/stats/', 'Stats'], ['/leaderboard/', 'Leaders'], ['/roll/', 'Roll'], ['/my/', 'My Skellies'], ['/docs/', 'Docs']];
     const top = U.el('header', { class: 'top', 'data-check': 'header' },
       U.el('div', { class: 'wrap top-in' },
         U.el('a', { class: 'brand', href: '/', html: `${logo}<span>SkellyKuntz</span>` }),
@@ -159,11 +159,17 @@
     // is the secondary market.
     if (C.mint && C.mint.soldOut) {
       wrap.classList.add('open', 'soldout');
-      eyebrow.querySelector('.cd-words').textContent = 'Mint is over';
-      box.append(U.el('div', { class: 'cd-openword' }, 'Minted out'));
-      box.append(U.el('p', { class: 'cd-when' }, U.el('b', null, `All ${U.int(C.collection.supply)} Skellies minted.`), U.el('span', null, 'The only way in now is the secondary market.')));
+      eyebrow.querySelector('.cd-words').textContent = 'The crew is out there';
+      box.append(U.el('div', { class: 'cd-openword' }, `${U.int(C.collection.supply)} minted`));
+      box.append(U.el('p', { class: 'cd-when' },
+        U.el('b', null, 'Every Skelly is out there earning.'),
+        U.el('span', null, 'Two ways in now: buy one on the secondary market, or play the Roll for the pot.')));
+      const acts = U.el('div', { class: 'cd-cta' });
       const buy = U.linkOk(C.links.collection) ? C.links.collection : C.links.mint;
-      if (U.linkOk(buy)) box.append(U.el('div', { class: 'cd-cta' }, U.el('a', { class: 'btn lemon cd-go', href: buy, target: '_blank', rel: 'noopener' }, 'Buy on OpenSea')));
+      if (U.linkOk(buy)) acts.append(U.el('a', { class: 'btn lemon cd-go', href: buy, target: '_blank', rel: 'noopener' }, 'Buy on OpenSea'));
+      acts.append(U.el('a', { class: 'btn acid', href: '/roll/' }, 'Play Skelly Roll'));
+      acts.append(U.el('a', { class: 'btn ghost', href: '/leaderboard/' }, 'Leaderboard'));
+      box.append(acts);
       return;
     }
     if (!isFinite(t)) {

@@ -155,7 +155,7 @@ p { margin: 0 0 1em; }
 .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin-bottom: 12px; }
 .panel-head h2, .panel-head h3 { text-shadow: 3px 3px 0 var(--line); }
 .halftone::after {
-  content: ''; position: absolute; right: 0; top: 0; width: 42%; height: 60%; pointer-events: none;
+  content: ''; position: absolute; right: 0; top: 0; width: 42%; height: min(60%, 300px); pointer-events: none;
   background: radial-gradient(circle, rgba(255,255,255,.08) 1.4px, transparent 1.8px) 0 0 / 7px 7px;
   -webkit-mask-image: linear-gradient(225deg, #000 20%, transparent 70%);
   mask-image: linear-gradient(225deg, #000 20%, transparent 70%);
@@ -362,8 +362,8 @@ tr:last-child td { border-bottom: 0; }
 .grid .card:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--line), 7px 7px 0 3px var(--bone); }
 .grid .card img { background: #2b2740 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 50'%3E%3Ccircle cx='18' cy='20' r='8' fill='%233d3757'/%3E%3C/svg%3E") center/60% no-repeat; }
 .more { text-align: center; padding: 20px; color: var(--muted); }
-.gmodal { width: min(760px, 100%); display: grid; grid-template-columns: 1fr; gap: 16px; }
-@media (min-width: 640px) { .gmodal { grid-template-columns: 300px minmax(0, 1fr); } }
+/* wide modal: the body (.skc) lays itself out, so the box adds no grid of its own */
+.gmodal { width: min(760px, 100%); }
 .gmodal .card { transform: none; }
 .traits { display: grid; gap: 6px; }
 .trait { display: flex; justify-content: space-between; gap: 10px; background: var(--panel-2); border: 2px solid var(--line); border-radius: 4px; padding: 6px 10px; font-size: 14px; }
@@ -662,3 +662,19 @@ tr:last-child td { border-bottom: 0; }
 .rl-feed li { display: flex; justify-content: space-between; gap: 10px; font-variant-numeric: tabular-nums; border-top: 1px solid var(--line-2, #3a3348); padding-top: 6px; }
 .rl-feed li b { color: var(--acid); }
 @media (max-width: 560px) { .rl-reel { width: 92px; height: 70px; font-size: 18px; } }
+
+/* ---- leaderboards & activity feed */
+.lb-table { width: 100%; border-collapse: collapse; margin: 10px 0 4px; font-variant-numeric: tabular-nums; }
+.lb-table th, .lb-table td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--line-2, #3a3348); }
+.lb-table th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--bone-2); }
+.lb-table th.num, .lb-table td.num { text-align: right; white-space: nowrap; }
+.lb-table tbody tr:nth-child(1) td { color: var(--lemon); }
+.lb-table tbody tr:nth-child(2) td { color: var(--bone-2); }
+.lb-table tbody tr:nth-child(3) td { color: var(--tangerine); }
+.lb-list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.lb-list li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--line-2, #3a3348); padding-top: 8px; }
+.badge.awaken, .badge.claim { background: var(--acid); color: var(--line); }
+.badge.level, .badge.win { background: var(--lemon); color: var(--line); }
+.badge.merge { background: var(--violet); color: var(--line); }
+.badge.reward { background: var(--sky); color: var(--line); }
+.badge.lose, .badge.roll { background: var(--panel-2); color: var(--bone-2); }

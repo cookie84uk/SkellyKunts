@@ -117,8 +117,12 @@ window.SKELLY_CONFIG = {
 
   // Our own stats service (skellybot on Railway): /stats and /listings. Replaces
   // the old stats Worker. Empty = the pages fall back to direct chain reads.
+  // Served from localhost, it points at the local bot so the site can be run and
+  // seen against a local index without touching production.
   stats: {
-    url: 'https://skelly-production.up.railway.app',
+    url: (typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+      ? 'http://localhost:4173'
+      : 'https://skelly-production.up.railway.app',
   },
 
   // The mint. `opensAt` (ISO 8601, UTC, e.g. '2026-09-21T18:00:00Z') turns
