@@ -687,3 +687,14 @@ tr:last-child td { border-bottom: 0; }
   border: 3px solid var(--line); border-radius: var(--radius); box-shadow: 5px 5px 0 var(--line);
 }
 .share-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 14px; }
+
+/* ---- leaderboard: jump bar, anchors, pagers */
+#roll, #skellies, #activity { scroll-margin-top: 112px; }
+.lb-jump { display: flex; gap: 8px; flex-wrap: wrap; }
+.lb-jump a {
+  font-family: var(--display); font-size: 18px; letter-spacing: .05em; text-decoration: none; line-height: 1;
+  color: var(--bone); background: var(--panel-2); border: 3px solid var(--line); border-radius: 999px;
+  padding: 7px 15px 6px; box-shadow: 3px 3px 0 var(--line);
+}
+.lb-jump a:hover { background: var(--lemon); color: var(--line); }
+.pager { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: flex-end; margin-top: 14px; }

@@ -42,12 +42,43 @@
       el('tbody', null, ...rows.map((r) => el('tr', null, ...columns.map((c) => el('td', { class: c.num ? 'num' : null }, c.v(r)))))));
   }
 
+  // ---------------------------------------------------------------- paging
+  // One page at a time, so a board is never the whole history at once.
+  const LIMIT = { roll: 25, skellies: 25, feed: 20 };
+  const qs = new URLSearchParams(location.search);
+  const pageNo = (k) => Math.max(1, Number(qs.get(k)) || 1);
+  let rollPage = pageNo('rp');
+  let skPage = pageNo('sp');
+  let feedPage = pageNo('fp');
+  const offsetOf = (p, kind) => (Math.max(1, p) - 1) * LIMIT[kind];
+
+  // The page lives in the URL, so a board can be linked and survives a reload.
+  function setUrlPage(key, val) {
+    const q = new URLSearchParams(location.search);
+    q.set(key, String(val));
+    history.replaceState(null, '', `${location.pathname}?${q}${location.hash}`);
+  }
+
+  // ‹ prev · 26–50 of 132 · next › — drawn only when there is more than one page.
+  function pager(kind, total, offset, go) {
+    const limit = LIMIT[kind];
+    const cur = Math.floor(offset / limit) + 1;
+    const pages = Math.max(1, Math.ceil(total / limit));
+    if (pages <= 1) return null;
+    const step = (label, to, off) => el('button', { class: 'btn xs', type: 'button', disabled: off || null, onclick: () => go(to) }, label);
+    return el('div', { class: 'pager' },
+      step('‹ prev', cur - 1, cur <= 1),
+      el('span', { class: 'dim small' }, `${SK.int(offset + 1)}–${SK.int(Math.min(offset + limit, total))} of ${SK.int(total)}`),
+      step('next ›', cur + 1, cur >= pages));
+  }
+
   // ---------------------------------------------------------------- roll
   let lastHead = null; // newest indexed block, so cards can say "how long ago"
   let rollPeriod = 'all';
   async function paintRoll() {
+    const offset = offsetOf(rollPage, 'roll');
     $('rl-note').textContent = 'reading…';
-    const d = await get(`/api/roll/leaderboard?period=${rollPeriod}`);
+    const d = await get(`/api/roll/leaderboard?period=${rollPeriod}&limit=${LIMIT.roll}&offset=${offset}`);
     if (!d) { $('rl-note').textContent = 'no data'; $('rl-table').innerHTML = ''; $('rl-biggest').innerHTML = ''; return; }
     const idx = d.indexed || {};
     if (idx.lastBlock) lastHead = idx.lastBlock;
@@ -71,13 +102,16 @@
       { h: 'lost', num: true, v: (r) => skelly(r.lost) },
       { h: 'net PnL', num: true, v: (r) => { const n = BigInt(r.net); return (n >= 0n ? '+' : '−') + skelly(n < 0n ? -n : n); } },
     ], d.players || [], 'Nobody has rolled in this window yet.'));
+    const p = pager('roll', d.total || 0, offset, (n) => { rollPage = n; setUrlPage('rp', n); paintRoll(); });
+    if (p) $('rl-table').append(p);
   }
 
   // ---------------------------------------------------------------- skellies
   let skPeriod = 'all';
   async function paintSkellies() {
+    const offset = offsetOf(skPage, 'skellies');
     $('sk-note').textContent = 'reading…';
-    const d = await get(`/api/leaderboard/skellies?period=${skPeriod}`);
+    const d = await get(`/api/leaderboard/skellies?period=${skPeriod}&limit=${LIMIT.skellies}&offset=${offset}`);
     if (!d) { $('sk-note').textContent = 'no data'; $('sk-table').innerHTML = ''; return; }
     const idx = d.indexed || {};
     $('sk-note').textContent = idx.indexing ? 'indexing…' : `${SK.int(idx.events || 0)} events indexed`;
@@ -89,20 +123,30 @@
       { h: 'payouts', num: true, v: (r) => SK.int(r.payouts) },
       { h: 'owner', v: () => SK.dash },
     ], d.skellies || [], 'No payouts indexed in this window yet.'));
+    const p = pager('skellies', d.total || 0, offset, (n) => { skPage = n; setUrlPage('sp', n); paintSkellies(); });
+    if (p) $('sk-table').append(p);
   }
 
   // ---------------------------------------------------------------- feed
   // rows that can become a share card
   const SHAREABLE = new Set(['win', 'claim', 'reward', 'awaken', 'level', 'merge']);
-  let lastFeedTop = null;
+  let lastFeedKey = null;
   async function paintFeed() {
-    const d = await get('/api/feed?limit=40');
+    const offset = offsetOf(feedPage, 'feed');
+    const d = await get(`/api/feed?limit=${LIMIT.feed}&offset=${offset}`);
     const box = $('feed');
-    if (!d || !d.items) { box.innerHTML = ''; box.append(el('li', { class: 'dim' }, 'Feed not connected yet.')); return; }
-    if (d.indexed && d.indexed.lastBlock) lastHead = d.indexed.lastBlock;
-    const top = d.items[0] ? d.items[0].tx : null;
-    if (top === lastFeedTop) return; // nothing new
-    lastFeedTop = top;
+    const pagerHost = $('feed-pager');
+    const clearPager = () => { if (pagerHost) pagerHost.innerHTML = ''; };
+    if (!d || !d.items) {
+      box.innerHTML = '';
+      box.append(el('li', { class: 'dim' }, 'Feed not connected yet.'));
+      clearPager();
+      return;
+    }
+    const top = d.items[0] ? d.items[0].tx : '';
+    const key = `${offset}|${d.total}|${top}`;
+    if (key === lastFeedKey) return; // nothing new on this page
+    lastFeedKey = key;
     box.innerHTML = '';
     for (const it of d.items) {
       box.append(el('li', null,
@@ -113,6 +157,9 @@
         it.tx ? el('a', { class: 'dim small', href: SK.explorerTx(it.tx), target: '_blank', rel: 'noopener' }, 'tx') : null,
         SHAREABLE.has(it.kind) ? el('button', { class: 'btn xs', type: 'button', onclick: () => openCard(it) }, 'card') : null));
     }
+    clearPager();
+    const p = pager('feed', d.total || 0, offset, (n) => { feedPage = n; setUrlPage('fp', n); paintFeed(); });
+    if (p && pagerHost) pagerHost.append(p);
   }
 
   // ---------------------------------------------------------------- share cards
@@ -255,11 +302,18 @@
       });
     }
   }
-  wire('rl-period', (p) => { rollPeriod = p; paintRoll(); }, rollPeriod);
-  wire('sk-period', (p) => { skPeriod = p; paintSkellies(); }, skPeriod);
+  // changing the window starts the board again from page 1
+  wire('rl-period', (p) => { rollPeriod = p; rollPage = 1; setUrlPage('rp', 1); paintRoll(); }, rollPeriod);
+  wire('sk-period', (p) => { skPeriod = p; skPage = 1; setUrlPage('sp', 1); paintSkellies(); }, skPeriod);
 
-  paintRoll();
-  paintSkellies();
-  paintFeed();
-  setInterval(paintFeed, 20_000);
+  // A hash link (#activity) arrives before the boards have painted, when the page
+  // is still too short to land on it. Jump again once everything is on screen.
+  function landOnHash() {
+    const id = location.hash.replace('#', '');
+    const node = id ? document.getElementById(id) : null;
+    if (node) node.scrollIntoView({ block: 'start' });
+  }
+  Promise.all([paintRoll(), paintSkellies(), paintFeed()]).finally(() => setTimeout(landOnHash, 250));
+  // only page 1 follows the chain live; deeper pages stay put while you read
+  setInterval(() => { if (feedPage === 1) paintFeed(); }, 20_000);
 })();
