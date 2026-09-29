@@ -118,10 +118,10 @@
     $('sk-table').innerHTML = '';
     $('sk-table').append(table([
       { h: 'Skelly', v: (r) => el('a', { href: `/market/?id=${r.tokenId}` }, `#${r.tokenId}`) },
-      { h: 'share points', num: true, v: (r) => SK.dash },
+      { h: 'share points', num: true, v: (r) => (r.power == null ? SK.dash : SK.power(r.power)) },
       { h: 'earned (ETH)', num: true, v: (r) => SK.eth(BigInt(r.earnedWei)) },
       { h: 'payouts', num: true, v: (r) => SK.int(r.payouts) },
-      { h: 'owner', v: () => SK.dash },
+      { h: 'owner', v: (r) => (r.owner ? walletCell(r.owner) : SK.dash) },
     ], d.skellies || [], 'No payouts indexed in this window yet.'));
     const p = pager('skellies', d.total || 0, offset, (n) => { skPage = n; setUrlPage('sp', n); paintSkellies(); });
     if (p) $('sk-table').append(p);
