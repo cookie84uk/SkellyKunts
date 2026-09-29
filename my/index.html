@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/skelly.css?v=20260929290000">
+<link rel="stylesheet" href="/css/skelly.css?v=20260929300000">
 </head>
 <body>
 
@@ -44,10 +44,8 @@
       <button class="btn xs ghost" id="btn-disconnect">Disconnect</button>
     </div>
     <div class="stat-row hidden" id="stats">
-      <span>Skellies: <b id="s-count">—</b></span>
       <span>$SKELLY in wallet: <b id="s-bal">—</b></span>
       <span>$SKELLY approved to burn: <b id="s-allow">—</b></span>
-      <span id="s-owed">—</span>
     </div>
     <p class="launch-note hidden" id="launch-note">Wake up opens when $SKELLY launches.</p>
   </section>
@@ -65,17 +63,19 @@
     <button class="btn sm lemon" id="btn-level-all">Level all up</button>
     <button class="btn sm sky" id="btn-unearth-all">Take out all</button>
     <button class="btn sm pink" id="btn-absorb">Merge selected</button>
-    <span class="dim small" id="sel-note">Tick 2 or 3 Skellies to merge. The first one you tick is the one that stays.</span>
+    <span class="dim small" id="sel-note">Tick 2–3 to merge · the first ticked stays.</span>
   </div>
 
   <div class="filters hidden" id="filters" data-check="filters">
     <input id="f-search" type="search" inputmode="numeric" placeholder="Search id" aria-label="Search by id">
-    <button class="btn xs on" type="button" data-f="all">All</button>
-    <button class="btn xs" type="button" data-f="awake">Awake</button>
-    <button class="btn xs" type="button" data-f="asleep">Asleep</button>
-    <button class="btn xs" type="button" data-f="relic">Relics</button>
-    <button class="btn xs" type="button" data-f="holding">Holding</button>
-    <button class="btn xs" type="button" data-f="owed">Earning</button>
+    <span class="f-chips">
+      <button class="btn xs on" type="button" data-f="all">All</button>
+      <button class="btn xs" type="button" data-f="awake">Awake</button>
+      <button class="btn xs" type="button" data-f="asleep">Asleep</button>
+      <button class="btn xs" type="button" data-f="relic">Relics</button>
+      <button class="btn xs" type="button" data-f="holding">Holding</button>
+      <button class="btn xs" type="button" data-f="owed">Earning</button>
+    </span>
     <select id="f-sort" aria-label="Sort">
       <option value="power">Sort: share points</option>
       <option value="owed">Sort: earned</option>
@@ -96,6 +96,6 @@
 <script src="/js/chain.js?v=20260929190000"></script>
 <script src="/js/token.js?v=20260929190000"></script>
 <script src="/js/wallet.js?v=20260929190000"></script>
-<script src="/js/mine.js?v=20260929290000"></script>
+<script src="/js/mine.js?v=20260929300000"></script>
 </body>
 </html>

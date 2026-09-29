@@ -74,7 +74,6 @@
     if (!wallet.address) return paint();
     $('addr').textContent = wallet.address;
     $('connect').classList.add('hidden'); $('connected').classList.remove('hidden');
-    $('s-count').textContent = '…';
     try {
       // Re-read while the token is unbound so a Refresh after launch flips the page.
       if (!consts || consts.marrowBound !== true) consts = await chain.constants();
@@ -110,10 +109,8 @@
     const list = $('skellies'); list.innerHTML = '';
     if (!on || !mine) return;
     const m = mine.marrow;
-    $('s-count').textContent = SK.int(mine.skellies.length);
     $('s-bal').textContent = m && m.balance != null ? `${SK.tokens(m.balance)} ${sym()}` : SK.dash;
     $('s-allow').textContent = m && m.allowance != null ? `${SK.tokens(m.allowance)} ${sym()}` : SK.dash;
-    paintSummary();
     paintTiles();
     const fb = $('filters');
     if (fb) fb.classList.toggle('hidden', !mine.skellies.length);
@@ -158,16 +155,6 @@
     let usd = 0;
     for (const s of mine.skellies) for (const h of s.holdings) if ((h.symbol || '').toUpperCase() === 'USDG') usd += Number(h.amount) / 1e6;
     return usd;
-  }
-
-  function paintSummary() {
-    // One number, and only a number they can act on: what is actually take-outable
-    // right now. Nothing speculative, no "earned in total" that isn't payouts.
-    const usd = usdOfWallet();
-    const inside = mine.skellies.filter((s) => s.holdings.length).length;
-    $('s-owed').textContent = usd >= 0.005
-      ? `You can take out ${money(usd)} right now${inside ? ` — from ${SK.int(inside)} Skellies` : ''}.`
-      : 'Nothing to take out yet. A Skelly starts earning the hour after it wakes.';
   }
 
   // The wallet's own dashboard, summed from the same Skelly state the cards use.
@@ -286,7 +273,7 @@
     const off = unbound();
     $('btn-absorb').disabled = off || n < 2 || n > 3;
     $('btn-absorb').title = off ? LAUNCH_NOTE : '';
-    $('sel-note').textContent = off ? `Merge opens when $SKELLY launches.` : n ? `${n} selected. The one that stays: #${[...selected][0]}.` : 'Tick 2 or 3 Skellies to merge. The first one you tick is the one that stays.';
+    $('sel-note').textContent = off ? `Merge opens when $SKELLY launches.` : n ? `${n} selected · #${[...selected][0]} stays.` : 'Tick 2–3 to merge · the first ticked stays.';
     $('btn-unearth-all').textContent = n ? `Take out selected (${unearthTargets().length})` : 'Take out all';
     $('btn-unearth-all').disabled = !unearthTargets().length;
     const asleep = bulkTargets().filter((s) => s.raised === false);

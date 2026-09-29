@@ -310,6 +310,19 @@ tr:last-child td { border-bottom: 0; }
 }
 .filters input[type="search"] { width: 120px; }
 .filters .btn.on { outline: 3px solid var(--line); outline-offset: 1px; }
+/* The filter chips scroll sideways on a phone instead of stacking into rows. */
+.f-chips { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding-bottom: 2px; scrollbar-width: none; }
+.f-chips::-webkit-scrollbar { display: none; }
+@media (max-width: 719px) {
+  /* Search + sort + count on one line, chips on the next, actions two-up. */
+  .filters { gap: 8px 10px; }
+  .filters input[type="search"] { flex: 1 1 90px; width: auto; }
+  .f-chips { order: 3; flex: 1 0 100%; }
+  #f-count { margin-left: auto; }
+  .bulk .btn { flex: 1 1 calc(50% - 5px); }
+  .tile { padding: 10px 10px 8px; }
+  .tile .v { font-size: 24px; }
+}
 
 /* ------------------------------------------------------------ modal */
 .veil { position: fixed; inset: 0; background: rgba(5,4,10,.78); display: none; z-index: 100; padding: var(--gutter); overflow: auto; }
